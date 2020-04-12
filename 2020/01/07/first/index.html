@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>My first Markdown · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">My first Markdown</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2019-03-28</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="FirstMarkdown"> FirstMarkdown</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="First-Markdown"><a href="#First-Markdown" class="headerlink" title="First Markdown"></a>First Markdown</h1><p>第一个正式发布的<strong>Markdown</strong>,用于实战训练<strong><em>Markdown语法</em></strong></p>
+<h3 id="这里是我的GitHub链接"><a href="#这里是我的GitHub链接" class="headerlink" title="这里是我的GitHub链接"></a>这里是我的<a href="https://github.com/ZJR2954" target="_blank" rel="noopener">GitHub链接</a></h3><h3 id="我学习过的语言有："><a href="#我学习过的语言有：" class="headerlink" title="我学习过的语言有："></a>我学习过的语言有：</h3><ul>
+<li><p>C/C++</p>
+</li>
+<li><p>HTML</p>
+</li>
+<li><p>CSS</p>
+</li>
+<li><p>JavaScript</p>
+</li>
+<li><p>Python</p>
+</li>
+</ul>
+<h3 id="目前我正在学习的语言是："><a href="#目前我正在学习的语言是：" class="headerlink" title="目前我正在学习的语言是："></a>目前我正在学习的语言是：</h3><p><strong>Java</strong>(我主要发展的方向是 Java Web)，Java Web它需要有一些基础：</p>
+<ol>
+<li>HTML</li>
+<li>CSS</li>
+<li>JavaScript(简称js)</li>
+<li>Java</li>
+<li><del>等等</del>(说“等等”是因为可能还有我不知道的)</li>
+</ol>
+<h3 id="下面是一个表格："><a href="#下面是一个表格：" class="headerlink" title="下面是一个表格："></a>下面是一个表格：</h3><table>
+<thead>
+<tr>
+<th>姓名</th>
+<th>性别</th>
+<th>爱好</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>正经仁</td>
+<td>男</td>
+<td>睡觉</td>
+</tr>
+<tr>
+<td>ZJR</td>
+<td>male</td>
+<td>sleep</td>
+</tr>
+<tr>
+<td>xiao</td>
+<td>nan</td>
+<td>ShuiJiao</td>
+</tr>
+</tbody></table>
+<h3 id="下面是一个代码块："><a href="#下面是一个代码块：" class="headerlink" title="下面是一个代码块："></a>下面是一个代码块：</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Hello Markdown!\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这篇博客说这些都是为了熟悉<strong>Markdown</strong></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/01/07/first/">https://zjr2954.github.io/2020/01/07/first/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2020/01/07/HashMap%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E4%BD%9C%E4%B8%BAKey%E6%97%B6%E7%9A%84%E5%9D%91/" title="在HashMap使用自定义对象作为Key时的坑"><span>< PreviousPost</span><br><span class="prevTitle">在HashMap使用自定义对象作为Key时的坑</span></a><a class="nextSlogan" href="/2020/01/07/C++%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" title="C++学生信息管理系统"><span>NextPost ></span><br><span class="nextTitle">C++学生信息管理系统</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#First-Markdown"><span class="toc-number">1.</span> <span class="toc-text">First Markdown</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#这里是我的GitHub链接"><span class="toc-number">1.0.1.</span> <span class="toc-text">这里是我的GitHub链接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#我学习过的语言有："><span class="toc-number">1.0.2.</span> <span class="toc-text">我学习过的语言有：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#目前我正在学习的语言是："><span class="toc-number">1.0.3.</span> <span class="toc-text">目前我正在学习的语言是：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下面是一个表格："><span class="toc-number">1.0.4.</span> <span class="toc-text">下面是一个表格：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下面是一个代码块："><span class="toc-number">1.0.5.</span> <span class="toc-text">下面是一个代码块：</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

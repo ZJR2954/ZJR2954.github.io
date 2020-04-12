@@ -1,0 +1,240 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1>Mr.ZJR's Blog</h1><h5>Welcome to my Blog!</h5><div class="intro-social"><a class="fa fa-github" href="//github.com/" target="_blank" title="github"></a><a class="fa fa-weibo" href="//www.weibo.com" target="_blank" title="weibo"></a><a class="fa fa-facebook" href="//www.facebook.com" target="_blank" title="facebook"></a><a class="fa fa-twitter" href="//twitter.com" target="_blank" title="twitter"></a></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><section id="recent-posts"><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/%E5%85%B3%E4%BA%8EVue%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8form-making%E5%B7%A5%E5%85%B7/">关于Vue前端项目如何使用form-making工具</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:01.003Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:01.003Z">2019-11-28</time></div><div class="recent-post-content">关于Vue前端项目如何使用form-making工具关于form-making的介绍不做赘述，如果想了解其详细情况可以访问
+form-making官网：http://docs.form.xiaoyaoji.cn/zh/
+
+本文只叙述如何使用该工具。
+环境声明：
+如果在Vue项目中使用该工具，需要有Vue的环境：node环境、npm工具、vue环境。另外，官方说明使用fomr-making工具需要在vue中引入element-ui组件库，我在构建Vue项目时使用了vue-cli3脚手架工具，使用的是IDEA编译器。
+一、构建项目首先使用vue-cli3脚手架工具初始化一个Vue项目，步骤如下：
+ ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="form-making的使用"> form-making的使用</a></div><div class="read-more"><a class="more" href="/2020/01/07/%E5%85%B3%E4%BA%8EVue%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8form-making%E5%B7%A5%E5%85%B7/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%AE%B0%E5%BD%95/">Linux常用命令记录</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.992Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.992Z">2019-10-11</time></div><div class="recent-post-content">Linux常用命令记录删除文件夹    rm -rf 文件夹名
+移动文件 mv 文件名 to 地址
+解压zip unzip 文件名
+开启端口 ufw allow 8080
+关闭端口 ufw delete allow 8080
+</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="Linux常用命令"> Linux常用命令</a></div><div class="read-more"><a class="more" href="/2020/01/07/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E8%AE%B0%E5%BD%95/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/SSM%E5%AD%A6%E4%B9%A0%E9%98%B6%E6%AE%B5%E7%AC%94%E8%AE%B0/">SSM学习阶段笔记</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:01.000Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:01.000Z">2019-08-04</time></div><div class="recent-post-content">SSM学习阶段笔记学习SSM已经有一小段时间了，总体来说已经达到了入门水平，在此记录一下。
+SSM是Spring、SpringMVC和Mybatis三个框架的简称。我学习的顺序是先Spring、Mybatis、SpringMVC，主要通过网上视频来学习，学习这三个框架需要一定的基础，如Java基础、JavaWeb、Mysql、HTML以及一些其中所需的延展内容，如servlet、jsp、Tomcat等的基础。
+Spring的IOC可以实现依赖注入，装载bean对象，解除程序耦合，使得在类中很少出现new关键字。Spring的AOP可以抽取重复代码，还可以实现事务管理。基于IOC和AOP的机制， ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="SSM笔记"> SSM笔记</a></div><div class="read-more"><a class="more" href="/2020/01/07/SSM%E5%AD%A6%E4%B9%A0%E9%98%B6%E6%AE%B5%E7%AC%94%E8%AE%B0/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/C++%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">C++学生信息管理系统</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.929Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.929Z">2019-06-03</time></div><div class="recent-post-content">C++学生信息管理系统需求分析(功能要求)建立一个动态链表，链表中每一结点包括：学号、姓名、性别、年龄、成绩。程序能实现以下功能：
+
+建立链表
+显示链表
+查找链表中是否存在某个元素，并显示这个元素的所有信息，若没有这个元素则显示“无此记录！”的信息。
+删除链表中指定学号的结点。
+在链表中指定的位置插入一个新结点（学号不能和其他结点重复）。
+要求：程序运行中，先显示实现以上功能所构成的菜单，然后根据选项调用相应程序及显示其对应的结果，然后再显示菜单程序，直到按“退出”选项，程序执行结束。
+
+概要设计操作流程图：
+
+1.学生类Student包含：
+学号num（string），姓名name（stri ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="学生信息管理系统"> 学生信息管理系统</a></div><div class="read-more"><a class="more" href="/2020/01/07/C++%E5%AD%A6%E7%94%9F%E4%BF%A1%E6%81%AF%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/MySQL%E5%B8%B8%E7%94%A8%E8%AF%AD%E5%8F%A5/">MySQL常用语句</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.996Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.996Z">2019-05-17</time></div><div class="recent-post-content">MySQL常用语句摘抄几个常用的MySQL语句放在这里方便查找(方法不唯一，只列举亲测方便好用的少数语句)。
+1.初始化mySQL1mysqld --initialize --console
+
+
+
+2.安装mySQL1mysqld install
+
+
+
+3.启动mySQL服务1net start mysql
+
+
+
+4.关闭MySQL服务1net stop mysql
+
+
+
+5.连接MySQL(登陆MySQL)1mysql -uroot -p
+
+远程连接，以192.168.0.1这个IP地址为例
+1mysql -u192.168.0.1 -p
+
+
+
+6.退出MySQL1exit
+
+
+
+7.修改密 ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="MySQL常用语句"> MySQL常用语句</a></div><div class="read-more"><a class="more" href="/2020/01/07/MySQL%E5%B8%B8%E7%94%A8%E8%AF%AD%E5%8F%A5/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/%E5%9C%A8frame%E9%87%8C%E9%9D%A2%E4%BD%BF%E7%94%A8%E9%93%BE%E6%8E%A5%E5%AE%9E%E7%8E%B0%E6%95%B4%E4%BD%93%E8%B7%B3%E8%BD%AC/">在frame里面使用链接实现整体跳转</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:01.008Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:01.008Z">2019-05-10</time></div><div class="recent-post-content">在frame里面使用链接实现整体跳转最近在jsp里面使用frameset+frame标签时，发现嵌套&lt;a href=”url”&gt;&lt; /a&gt;标签的时候只在某一个框架里面跳转了页面，而我预期想要的效果是整个页面都跳转，终于在一番查找之后找到了解决方法。特地在此记录分享。
+首先举个例子对比frame里面的部分跳转和整体跳转：
+
+点击第一个链接后的效果：
+
+点击第二个链接后的效果：
+
+默认状态为第一种跳转方式，即部分跳转（只是某个frame里面跳转了）。
+想要实现整个frame页面都跳转，要在&lt;a href=”url”&gt;&lt; /a&gt;标签里面做文章，给&lt ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="frame里面使用链接问题"> frame里面使用链接问题</a></div><div class="read-more"><a class="more" href="/2020/01/07/%E5%9C%A8frame%E9%87%8C%E9%9D%A2%E4%BD%BF%E7%94%A8%E9%93%BE%E6%8E%A5%E5%AE%9E%E7%8E%B0%E6%95%B4%E4%BD%93%E8%B7%B3%E8%BD%AC/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/HashMap%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E4%BD%9C%E4%B8%BAKey%E6%97%B6%E7%9A%84%E5%9D%91/">在HashMap使用自定义对象作为Key时的坑</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.972Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.972Z">2019-05-04</time></div><div class="recent-post-content">在HashMap使用自定义对象作为Key时的坑最近在编写Java Web项目时使用HashMap发现一个容易忽视的坑，在此分享。
+我发现在使用自定义对象作为HashMap的key时，即使类的实例化对象里面内容相同，也还是不能get到对应的value，走Debug调试时发现内容的确是相同的。苦苦寻觅解决方法之后，发现在使用自定义类作为HashMap的Key时，必须重写自定义类的equals()方法和hashCode()方法。在eclipse里面可以使用快捷键 alt+shift+S键+H键，然后选择判定的条件。
+没有重写equals()方法和hashCode()方法时的代码和运行结果:
+1234 ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="HashMap自定义对象作为Key的误区"> HashMap自定义对象作为Key的误区</a></div><div class="read-more"><a class="more" href="/2020/01/07/HashMap%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1%E4%BD%9C%E4%B8%BAKey%E6%97%B6%E7%9A%84%E5%9D%91/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/Java%E5%AE%9E%E7%8E%B0%E5%8F%91%E9%82%AE%E4%BB%B6%E5%8A%9F%E8%83%BD/">Java实现发邮件功能</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.987Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.987Z">2019-04-26</time></div><div class="recent-post-content">Java代码实现发邮件的功能在学习JavaWeb的过程中要实现发邮件的功能，现学现卖。
+1.准备工作1&gt;创建项目，导入jar包我使用的是eclipse，创建的是web项目。
+在新建好的web项目下的src里面新建一个包，在这个包里面创建两个类，一个是发送邮件的工具类，一个是发送邮件的测试类。
+导入jar包：mail.jar和rt.jar，可以在eclipse官网找到资源。
+项目结构如图：
+
+2&gt;开通发送方邮箱的SMTP服务以QQ邮箱为例，在邮箱设置里面找到账户—&gt;找到SMTP服务并开启(开启这个服务需要向提供服务商发送短信) 如图：
+
+开启服务并记下授权码(因为以后在程序里面 ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="Java发邮件"> Java发邮件</a></div><div class="read-more"><a class="more" href="/2020/01/07/Java%E5%AE%9E%E7%8E%B0%E5%8F%91%E9%82%AE%E4%BB%B6%E5%8A%9F%E8%83%BD/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/Java%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Java基础语法学习笔记</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.983Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.983Z">2019-03-28</time></div><div class="recent-post-content">Java基础语法学习笔记学习Java过程中记下一些细节和与其他语言有不同的地方，方便日后查找。
+Java基本数据类型
+byte (8位、有符号的，以二进制补码表示的整数)
+
+最小值是 -128（-2^7）；
+最大值是 127（2^7-1）。
+
+
+short (16 位、有符号的以二进制补码表示的整数)
+
+最小值是 -32768（-2^15）；
+
+最大值是 32767（2^15 - 1）。
+
+
+
+int (32位、有符号的以二进制补码表示的整数)
+
+最小值是 -2,147,483,648（-2^31）；
+最大值是 2,147,483,647（2^31 - 1）。
+
+
+long (64 位、有符号 ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="Java笔记"> Java笔记</a></div><div class="read-more"><a class="more" href="/2020/01/07/Java%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/#more">ReadMore</a></div><hr></div><div class="recent-post-item"><div class="post-title"><a href="/2020/01/07/first/">My first Markdown</a></div><div class="post-time"><i class="fa fa-table"></i><time datetime="2020-01-07T05:36:00.958Z">2020-01-07</time><i class="fa fa-edit"></i><time datetime="2020-01-07T05:36:00.958Z">2019-03-28</time></div><div class="recent-post-content">First Markdown第一个正式发布的Markdown,用于实战训练Markdown语法
+这里是我的GitHub链接我学习过的语言有：
+C/C++
+
+HTML
+
+CSS
+
+JavaScript
+
+Python
+
+
+目前我正在学习的语言是：Java(我主要发展的方向是 Java Web)，Java Web它需要有一些基础：
+
+HTML
+CSS
+JavaScript(简称js)
+Java
+等等(说“等等”是因为可能还有我不知道的)
+
+下面是一个表格：
+
+
+姓名
+性别
+爱好
+
+
+
+正经仁
+男
+睡觉
+
+
+ZJR
+male
+sleep
+
+
+xiao
+nan
+ShuiJiao
+
+
+下面是一个代码块： ...</div><div class="recent-post-tags"><a class="post-tag fa fa-tag" href="javascript:void(0)" date-tags="FirstMarkdown"> FirstMarkdown</a></div><div class="read-more"><a class="more" href="/2020/01/07/first/#more">ReadMore</a></div><hr></div></section><nav class="cxo-page-nav"><a class="extend prev" rel="prev" href="/">&amp;#60; PREV</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/">NEXT &amp;#62;</a></nav></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

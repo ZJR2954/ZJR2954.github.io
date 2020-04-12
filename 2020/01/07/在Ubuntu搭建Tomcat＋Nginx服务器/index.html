@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>在Ubuntu搭建Tomcat＋Nginx服务器 · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">在Ubuntu搭建Tomcat＋Nginx服务器</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2019-09-29</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="Ubuntu下搭建Tomcat＋Nginx服务器"> Ubuntu下搭建Tomcat＋Nginx服务器</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="在Ubuntu搭建Tomcat＋Nginx服务器"><a href="#在Ubuntu搭建Tomcat＋Nginx服务器" class="headerlink" title="在Ubuntu搭建Tomcat＋Nginx服务器"></a>在Ubuntu搭建Tomcat＋Nginx服务器</h1><p>实战是最快的学习方式，最近在写项目的时候遇到跨域问题，参考网上的说法，通过Nginx可以有效的处理这个问题，特地在此记下应该如何安装，顺便把Tomcat的安装方式也记录一下。</p>
+<p><em>说明：</em></p>
+<p><em>环境：Ubuntu16.04(32位)</em></p>
+<h2 id="安装Tomcat"><a href="#安装Tomcat" class="headerlink" title="安装Tomcat"></a>安装Tomcat</h2><p>Tomcat需要在Java环境下运行，所以你的Tomcat必须安装有Java环境</p>
+<p>检查是否安装了Java的jdk</p>
+<p>在终端输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -v</span><br></pre></td></tr></table></figure>
+
+<p>如果是这样的结果，则说明有Java环境</p>
+<p><img src="https://zjr2954.github.io/images/%E6%A3%80%E6%9F%A5Java%E7%8E%AF%E5%A2%83.jpg" alt="检查Java环境"></p>
+<p>否则就要安装Java的jdk</p>
+<p>我是通过apt安装的方式，亲测有效，方便</p>
+<p>步骤：</p>
+<p>在终端输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br></pre></td></tr></table></figure>
+
+<p>待apt更新完成后继续输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install openjdk-8-jdk</span><br></pre></td></tr></table></figure>
+
+<p>然后检查是否安装Java环境是否成功，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></table></figure>
+
+<p>有版本信息出现，则说明成功安装了Java环境</p>
+<p>然后在tomcat的官方网站</p>
+<p><img src="https://zjr2954.github.io/images/tomcat%E5%AE%98%E7%BD%91.jpg" alt=""></p>
+<p>找tomcat的下载链接并复制(后面会用到)：</p>
+<p><a href="http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-7/v7.0.96/bin/apache-tomcat-7.0.96.tar.gz" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-7/v7.0.96/bin/apache-tomcat-7.0.96.tar.gz</a></p>
+<p><img src="https://zjr2954.github.io/images/%E5%A4%8D%E5%88%B6tomcat%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80.jpg" alt="复制tomcat下载地址"></p>
+<p>我找的是7.0.96版本的，也有更加新的版本，但是个人对tomcat7用的较多</p>
+<p>然后在/usr/local目录下进入终端，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir server</span><br></pre></td></tr></table></figure>
+
+<p>新建了一个server目录，然后输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir tomcat7.0.96</span><br></pre></td></tr></table></figure>
+
+<p>新建了一个tomcat7.0.96目录，然后输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd server&#x2F;tomcat7.0.96</span><br></pre></td></tr></table></figure>
+
+<p>进入了tomcat7.0.96这个目录，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;apache&#x2F;tomcat&#x2F;tomcat-7&#x2F;v7.0.96&#x2F;bin&#x2F;apache-tomcat-7.0.96.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>待下载完tomcat安装包以后，继续在终端输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar zxvf apache-tomcat-7.0.96.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>解压完压缩包以后就初步安装好了tomcat</p>
+<p>以后可以在终端执行以下命令启动tomcat：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo &#x2F;usr&#x2F;local&#x2F;server&#x2F;tomcat7.0.96&#x2F;apache-tomcat-7.0.96&#x2F;bin&#x2F;startup.sh</span><br></pre></td></tr></table></figure>
+
+<p>测试tomcat启动成功，在浏览器输入localhost:8080并访问的结果：</p>
+<p><img src="https://zjr2954.github.io/images/tomcat%E6%88%90%E5%8A%9F%E5%9B%BE.jpg" alt=""></p>
+<p>输入以下命令关闭tomcat：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo &#x2F;usr&#x2F;local&#x2F;server&#x2F;tomcat7.0.96&#x2F;apache-tomcat-7.0.96&#x2F;bin&#x2F;shutdown.sh</span><br></pre></td></tr></table></figure>
+
+<p>再次访问结果：</p>
+<p><img src="https://zjr2954.github.io/images/tomcat%E5%A4%B1%E8%B4%A5%E5%9B%BE.jpg" alt="tomcat失败图"></p>
+<h2 id="安装Nginx"><a href="#安装Nginx" class="headerlink" title="安装Nginx"></a>安装Nginx</h2><p>和tomcat一样，先找到nginx官方网站，但是nginx需要依赖很多其他的东西，所以后面有一系列的下载操作：</p>
+<p><img src="https://zjr2954.github.io/images/nginx%E5%AE%98%E7%BD%91.jpg" alt="nginx官网"></p>
+<p><img src="https://zjr2954.github.io/images/%E4%B8%8B%E8%BD%BDnginx.jpg" alt="下载nginx"></p>
+<p><img src="https://zjr2954.github.io/images/openssl%E5%AE%98%E7%BD%91.jpg" alt="openssl官网"></p>
+<p><img src="https://zjr2954.github.io/images/%E4%B8%8B%E8%BD%BDopenssl.jpg" alt="下载openssl"></p>
+<p><img src="https://zjr2954.github.io/images/zlib%E5%AE%98%E7%BD%91.jpg" alt="zlib官网"></p>
+<p><img src="https://zjr2954.github.io/images/%E4%B8%8B%E8%BD%BDzlib.jpg" alt="下载zlib"></p>
+<p><img src="https://zjr2954.github.io/images/pcre%E5%AE%98%E7%BD%91.jpg" alt="pcre官网"></p>
+<p><img src="https://zjr2954.github.io/images/pcre%E4%B8%8B%E8%BD%BD%E5%88%97%E8%A1%A8.jpg" alt="pcre下载列表">)<img src="https://zjr2954.github.io/images/%E4%B8%8B%E8%BD%BDpcre.jpg" alt="下载pcre"></p>
+<p>进入终端，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;server</span><br><span class="line"></span><br><span class="line">sudo mkdir nginx</span><br></pre></td></tr></table></figure>
+
+<p>完成在/usr/local/server目录下新建一个nginx目录</p>
+<p>然后在下载目录Downloads下进入终端，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo mv openssl-1.1.1d.tar.gz to &#x2F;usr&#x2F;local&#x2F;server&#x2F;nginx</span><br><span class="line"></span><br><span class="line">sudo mv zlib-1.2.11.tar.gz to &#x2F;usr&#x2F;local&#x2F;server&#x2F;nginx</span><br><span class="line"></span><br><span class="line">sudo mv pcre-8.43.tar.gz to &#x2F;usr&#x2F;local&#x2F;server&#x2F;nginx</span><br><span class="line"></span><br><span class="line">sudo mv nginx-1.16.1.tar.gz to &#x2F;usr&#x2F;local&#x2F;server&#x2F;nginx</span><br></pre></td></tr></table></figure>
+
+<p>将下载的安装包放入刚才建的nginx目录下，输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;server&#x2F;nginx</span><br><span class="line"></span><br><span class="line">sudo tar zxvf openssl-1.1.1d.tar.gz</span><br><span class="line"></span><br><span class="line">sudo tar zxvf zlib-1.2.11.tar.gz</span><br><span class="line"></span><br><span class="line">sudo tar zxvf pcre-8.43.tar.gz</span><br><span class="line"></span><br><span class="line">sudo tar zxvf nginx-1.16.1.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>完成解压操作</p>
+<p>再安装gcc，build-essential，make(已经安装好了的就不用再安装了)，不过再输安装命令也只会更新</p>
+<p>在终端输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gcc</span><br><span class="line"></span><br><span class="line">sudo apt install build-essential</span><br><span class="line"></span><br><span class="line">sudo apt install make</span><br></pre></td></tr></table></figure>
+
+<p>完成安装后，在终端输入(注意版本号)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;server&#x2F;nginx&#x2F;nginx-1.16.1</span><br><span class="line"></span><br><span class="line">sudo .&#x2F;configure --with-http_ssl_module --with-openssl&#x3D;..&#x2F;openssl-1.1.1d --with-pcre&#x3D;..&#x2F;pcre-8.43 --with-zlib&#x3D;..&#x2F;zlib-1.2.11</span><br><span class="line"></span><br><span class="line">sudo make</span><br></pre></td></tr></table></figure>
+
+<p>编译时间会很久，完成后继续输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装位置为/usr/local/nginx</strong></p>
+<p>启动nginx方式为输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin</span><br><span class="line"></span><br><span class="line">sudo .&#x2F;nginx</span><br></pre></td></tr></table></figure>
+
+<p>查看nginx的进程，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux|grep nginx</span><br></pre></td></tr></table></figure>
+
+<p>在浏览器输入IP地址查看是否启动成功</p>
+<p><img src="https://zjr2954.github.io/images/nginx%E5%90%AF%E5%8A%A8%E6%88%90%E5%8A%9F%E5%9B%BE.jpg" alt="nginx启动成功图"></p>
+<h2 id="关于反向代理"><a href="#关于反向代理" class="headerlink" title="关于反向代理"></a>关于反向代理</h2><h3 id="尝试用nginx代理请求到tomcat上"><a href="#尝试用nginx代理请求到tomcat上" class="headerlink" title="尝试用nginx代理请求到tomcat上"></a>尝试用nginx代理请求到tomcat上</h3><p>启动tomcat</p>
+<p>终端输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo &#x2F;usr&#x2F;local&#x2F;server&#x2F;tomcat7.0.96&#x2F;apache-tomcat-7.0.96&#x2F;bin&#x2F;startup.sh</span><br></pre></td></tr></table></figure>
+
+<p>启动tomcat，然后进入nginx的conf目录，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;conf</span><br></pre></td></tr></table></figure>
+
+<p>修改nginx.conf文件，输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit nginx.conf</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件：</p>
+<p><img src="https://zjr2954.github.io/images/nginx%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86.jpg" alt="nginx配置反向代理"></p>
+<p>添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">upstream tomcat &#123;</span><br><span class="line">			server 127.0.0.1:8080</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注释原来的location</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#location &#x2F; &#123;</span><br><span class="line">#	root	html;</span><br><span class="line">#	index	index.html index.htm</span><br><span class="line">#&#125;</span><br></pre></td></tr></table></figure>
+
+<p>添加新的location</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">location &#x2F; &#123;</span><br><span class="line">		proxy_set_header X-real-ip $remote_addr;</span><br><span class="line">		proxy_pass http:&#x2F;&#x2F;tomcat;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>保存</p>
+<p>重新启动nginx，在终端输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;nginx&#x2F;sbin</span><br><span class="line"></span><br><span class="line">sudo .&#x2F;nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p>再次测试，在浏览器输入IP地址</p>
+<p><img src="https://zjr2954.github.io/images/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%88%90%E5%8A%9F.jpg" alt="nginx反向代理成功"></p>
+<p>nginx反向代理成功</p>
+<h2 id="记录几条nginx命令"><a href="#记录几条nginx命令" class="headerlink" title="记录几条nginx命令"></a><em>记录几条nginx命令</em></h2><p>在sbin目录下执行：</p>
+<p>启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo .&#x2F;nginx</span><br></pre></td></tr></table></figure>
+
+<p>正常停止：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo .&#x2F;nginx -s quit</span><br></pre></td></tr></table></figure>
+
+<p>直接停止：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo .&#x2F;nginx -s stop</span><br></pre></td></tr></table></figure>
+
+<p>重启，修改配置后要用(不用先停止)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo .&#x2F;nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<p>杀死全部nginx：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">killall nginx</span><br></pre></td></tr></table></figure>
+
+<p>查看启动后日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps aux|grep nginx</span><br></pre></td></tr></table></figure>
+
+<p>查看端口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat -tlnp</span><br></pre></td></tr></table></figure>
+
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/01/07/%E5%9C%A8Ubuntu%E6%90%AD%E5%BB%BATomcat%EF%BC%8BNginx%E6%9C%8D%E5%8A%A1%E5%99%A8/">https://zjr2954.github.io/2020/01/07/%E5%9C%A8Ubuntu%E6%90%AD%E5%BB%BATomcat%EF%BC%8BNginx%E6%9C%8D%E5%8A%A1%E5%99%A8/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2020/01/07/%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AEMySQL/" title="如何安装与配置MySQL"><span>< PreviousPost</span><br><span class="prevTitle">如何安装与配置MySQL</span></a><a class="nextSlogan" href="/2020/01/07/%E5%9C%A8frame%E9%87%8C%E9%9D%A2%E4%BD%BF%E7%94%A8%E9%93%BE%E6%8E%A5%E5%AE%9E%E7%8E%B0%E6%95%B4%E4%BD%93%E8%B7%B3%E8%BD%AC/" title="在frame里面使用链接实现整体跳转"><span>NextPost ></span><br><span class="nextTitle">在frame里面使用链接实现整体跳转</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#在Ubuntu搭建Tomcat＋Nginx服务器"><span class="toc-number">1.</span> <span class="toc-text">在Ubuntu搭建Tomcat＋Nginx服务器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装Tomcat"><span class="toc-number">1.1.</span> <span class="toc-text">安装Tomcat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装Nginx"><span class="toc-number">1.2.</span> <span class="toc-text">安装Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于反向代理"><span class="toc-number">1.3.</span> <span class="toc-text">关于反向代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#尝试用nginx代理请求到tomcat上"><span class="toc-number">1.3.1.</span> <span class="toc-text">尝试用nginx代理请求到tomcat上</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#记录几条nginx命令"><span class="toc-number">1.4.</span> <span class="toc-text">记录几条nginx命令</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

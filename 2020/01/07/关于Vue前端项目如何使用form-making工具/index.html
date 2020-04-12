@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>关于Vue前端项目如何使用form-making工具 · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">关于Vue前端项目如何使用form-making工具</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2019-11-28</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="form-making的使用"> form-making的使用</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="关于Vue前端项目如何使用form-making工具"><a href="#关于Vue前端项目如何使用form-making工具" class="headerlink" title="关于Vue前端项目如何使用form-making工具"></a>关于Vue前端项目如何使用form-making工具</h1><p>关于form-making的介绍不做赘述，如果想了解其详细情况可以访问</p>
+<p><a href="http://docs.form.xiaoyaoji.cn/zh/" target="_blank" rel="noopener">form-making官网</a>：<a href="http://docs.form.xiaoyaoji.cn/zh/" target="_blank" rel="noopener">http://docs.form.xiaoyaoji.cn/zh/</a></p>
+<p><img src="https://zjr2954.github.io/images/making-form%E5%AE%98%E7%BD%91.png" alt="making-form官网"></p>
+<p>本文只叙述如何使用该工具。</p>
+<p><em>环境声明：</em></p>
+<p><em>如果在Vue项目中使用该工具，需要有Vue的环境：node环境、npm工具、vue环境。另外，官方说明使用fomr-making工具需要在vue中引入element-ui组件库，我在构建Vue项目时使用了vue-cli3脚手架工具，使用的是IDEA编译器。</em></p>
+<h2 id="一、构建项目"><a href="#一、构建项目" class="headerlink" title="一、构建项目"></a>一、构建项目</h2><p>首先使用vue-cli3脚手架工具初始化一个Vue项目，步骤如下：</p>
+<p>在想要存放项目的目录打开cmd命令行提示符窗口，执行以下命令创建一个名为09_vue_use_form-making的Vue项目：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue create <span class="number">09</span>_vue_use_form-making</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/use_form-making%E6%9E%84%E5%BB%BA%E9%A1%B9%E7%9B%AE.png" alt="use_form-making构建项目"></p>
+<p>项目模板下载完成后，在IDEA打开该项目，项目结构如下：</p>
+<p><img src="https://zjr2954.github.io/images/use_form-making%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A2%84%E8%A7%88.png" alt="use_form-making项目初始化预览"></p>
+<h2 id="二、安装form-making库"><a href="#二、安装form-making库" class="headerlink" title="二、安装form-making库"></a>二、安装form-making库</h2><p>根据官方教程描述，使用form-making需要先安装element-ui组件库，使用npm工具安装element-ui组件库的命令为“npm i element-ui -S”；使用npm工具安装form-making的命令为“ npm install form-making -S”，所以可以在IDEA的Terminal栏分别执行以下cmd命令（也可以在项目根目录下进入cmd执行）：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i element-ui -s</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%AE%89%E8%A3%85element-ui%E7%BB%84%E4%BB%B6%E5%BA%93.png" alt="安装element-ui组件库"></p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install form-making -s</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/use_form-making%E5%AE%89%E8%A3%85form-making.png" alt="use_form-making安装form-making"></p>
+<p>等待安装成功后检验安装情况，打开项目根目录下的package.json文件，有element-ui依赖和form-making依赖即安装成功：</p>
+<p><img src="https://zjr2954.github.io/images/use_form-making%E6%A3%80%E9%AA%8C%E4%BE%9D%E8%B5%96%E5%AE%89%E8%A3%85%E6%83%85%E5%86%B5.png" alt="use_form-making检验安装情况"></p>
+<h2 id="三、使用form-making"><a href="#三、使用form-making" class="headerlink" title="三、使用form-making"></a>三、使用form-making</h2><h3 id="1-使用依赖的库"><a href="#1-使用依赖的库" class="headerlink" title="1.使用依赖的库"></a>1.使用依赖的库</h3><p>在项目src目录下的main.js文件中添加如下引用：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ElementUI <span class="keyword">from</span> <span class="string">'element-ui'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'element-ui/lib/theme-chalk/index.css'</span>;</span><br><span class="line">Vue.use(ElementUI);</span><br><span class="line"><span class="keyword">import</span> FormMaking <span class="keyword">from</span> <span class="string">'form-making'</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">'form-making/dist/FormMaking.css'</span></span><br><span class="line">Vue.use(FormMaking)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/making-form%E4%BD%BF%E7%94%A8%E4%BE%9D%E8%B5%96.png" alt="making-form使用依赖"></p>
+<h3 id="2-设计相应组件"><a href="#2-设计相应组件" class="headerlink" title="2.设计相应组件"></a>2.设计相应组件</h3><p>官方给了<a href="http://form.xiaoyaoji.cn/#/zh-CN/" target="_blank" rel="noopener">在线表单设计器的网站</a>：<a href="http://form.xiaoyaoji.cn/#/zh-CN/" target="_blank" rel="noopener">http://form.xiaoyaoji.cn/#/zh-CN/</a></p>
+<p><img src="https://zjr2954.github.io/images/making-form%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1%E5%99%A8.png" alt="making-form表单设计器"></p>
+<p><strong>只需要在这个表单设计器中拖拽并设计想要用的组件就可以生成相应代码了。</strong></p>
+<p>关于如何使用该表单设计器，<a href="http://docs.form.xiaoyaoji.cn/zh/manual/start.html" target="_blank" rel="noopener">官方教程</a>给了很完整的讲解，在这里只简单引用几个。</p>
+<p><img src="https://zjr2954.github.io/images/%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1%E5%99%A8%E8%AE%BE%E8%AE%A1%E8%A1%A8%E5%8D%95.png" alt="表单设计器设计表单"></p>
+<p>设置好自己想要的属性和功能后，可以预览效果：</p>
+<p><img src="https://zjr2954.github.io/images/%E8%A1%A8%E5%8D%95%E8%AE%BE%E8%AE%A1%E9%A2%84%E8%A7%88.png" alt="表单设计预览"></p>
+<h3 id="3-生成代码并拷入项目"><a href="#3-生成代码并拷入项目" class="headerlink" title="3.生成代码并拷入项目"></a>3.生成代码并拷入项目</h3><p>在前面的步骤中确认无误后带点击生成代码，因为是放在Vue项目中，所以<strong>选择Vue Component</strong>：</p>
+<p><img src="https://zjr2954.github.io/images/%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81.png" alt="生成代码"></p>
+<p>在项目的src/components目录中新建一个.vue文件，将上面的代码拷入该文件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    &lt;fm-generate-form </span><br><span class="line">      :data=<span class="string">"jsonData"</span> </span><br><span class="line">      :remote=<span class="string">"remoteFuncs"</span> </span><br><span class="line">      :value=<span class="string">"editData"</span> </span><br><span class="line">      ref=<span class="string">"generateForm"</span></span><br><span class="line">    &gt;</span><br><span class="line">    &lt;<span class="regexp">/fm-generate-form&gt;</span></span><br><span class="line"><span class="regexp">    &lt;el-button type="primary" @click="handleSubmit"&gt;Submit&lt;/</span>el-button&gt;</span><br><span class="line">  &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> &#123;</span><br><span class="line">  data () &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      jsonData: &#123;<span class="string">"list"</span>:[&#123;<span class="string">"type"</span>:<span class="string">"grid"</span>,<span class="string">"icon"</span>:<span class="string">"icon-RectangleCopy"</span>,<span class="string">"columns"</span>:[&#123;<span class="string">"span"</span>:<span class="number">15</span>,<span class="string">"list"</span>:[&#123;<span class="string">"type"</span>:<span class="string">"select"</span>,<span class="string">"icon"</span>:<span class="string">"icon-select"</span>,<span class="string">"options"</span>:&#123;<span class="string">"defaultValue"</span>:<span class="string">""</span>,<span class="string">"multiple"</span>:<span class="literal">false</span>,<span class="string">"disabled"</span>:<span class="literal">false</span>,<span class="string">"clearable"</span>:<span class="literal">false</span>,<span class="string">"placeholder"</span>:<span class="string">""</span>,<span class="string">"required"</span>:<span class="literal">true</span>,<span class="string">"showLabel"</span>:<span class="literal">false</span>,<span class="string">"width"</span>:<span class="string">""</span>,<span class="string">"options"</span>:[&#123;<span class="string">"value"</span>:<span class="string">"普通用户"</span>&#125;,&#123;<span class="string">"value"</span>:<span class="string">"VIP用户"</span>&#125;,&#123;<span class="string">"value"</span>:<span class="string">"管理员"</span>&#125;],<span class="string">"remote"</span>:<span class="literal">false</span>,<span class="string">"filterable"</span>:<span class="literal">false</span>,<span class="string">"remoteOptions"</span>:[],<span class="string">"props"</span>:&#123;<span class="string">"value"</span>:<span class="string">"value"</span>,<span class="string">"label"</span>:<span class="string">"label"</span>&#125;,<span class="string">"remoteFunc"</span>:<span class="string">"func_1574859423133"</span>,<span class="string">"customClass"</span>:<span class="string">""</span>,<span class="string">"labelWidth"</span>:<span class="number">100</span>,<span class="string">"isLabelWidth"</span>:<span class="literal">false</span>,<span class="string">"hidden"</span>:<span class="literal">false</span>,<span class="string">"dataBind"</span>:<span class="literal">true</span>&#125;,<span class="string">"name"</span>:<span class="string">"身份"</span>,<span class="string">"novalid"</span>:&#123;&#125;,<span class="string">"key"</span>:<span class="string">"1574859423133"</span>,<span class="string">"model"</span>:<span class="string">"type"</span>,<span class="string">"rules"</span>:[&#123;<span class="string">"required"</span>:<span class="literal">true</span>,<span class="string">"message"</span>:<span class="string">"身份必须填写"</span>&#125;]&#125;,&#123;<span class="string">"type"</span>:<span class="string">"input"</span>,<span class="string">"icon"</span>:<span class="string">"icon-input"</span>,<span class="string">"options"</span>:&#123;<span class="string">"width"</span>:<span class="string">"60%"</span>,<span class="string">"defaultValue"</span>:<span class="string">""</span>,<span class="string">"required"</span>:<span class="literal">true</span>,<span class="string">"dataType"</span>:<span class="string">"string"</span>,<span class="string">"pattern"</span>:<span class="string">""</span>,<span class="string">"placeholder"</span>:<span class="string">"请输入用户名"</span>,<span class="string">"customClass"</span>:<span class="string">""</span>,<span class="string">"disabled"</span>:<span class="literal">false</span>,<span class="string">"labelWidth"</span>:<span class="number">100</span>,<span class="string">"isLabelWidth"</span>:<span class="literal">false</span>,<span class="string">"hidden"</span>:<span class="literal">false</span>,<span class="string">"dataBind"</span>:<span class="literal">true</span>,<span class="string">"showPassword"</span>:<span class="literal">false</span>,<span class="string">"remoteFunc"</span>:<span class="string">"func_1574859412374"</span>&#125;,<span class="string">"name"</span>:<span class="string">"用户名"</span>,<span class="string">"novalid"</span>:&#123;&#125;,<span class="string">"key"</span>:<span class="string">"1574859412374"</span>,<span class="string">"model"</span>:<span class="string">"username"</span>,<span class="string">"rules"</span>:[&#123;<span class="string">"type"</span>:<span class="string">"string"</span>,<span class="string">"message"</span>:<span class="string">"用户名格式不正确"</span>&#125;,&#123;<span class="string">"required"</span>:<span class="literal">true</span>,<span class="string">"message"</span>:<span class="string">"用户名必须填写"</span>&#125;]&#125;,&#123;<span class="string">"type"</span>:<span class="string">"input"</span>,<span class="string">"icon"</span>:<span class="string">"icon-input"</span>,<span class="string">"options"</span>:&#123;<span class="string">"width"</span>:<span class="string">"60%"</span>,<span class="string">"defaultValue"</span>:<span class="string">""</span>,<span class="string">"required"</span>:<span class="literal">true</span>,<span class="string">"dataType"</span>:<span class="string">"string"</span>,<span class="string">"pattern"</span>:<span class="string">""</span>,<span class="string">"placeholder"</span>:<span class="string">"请输入密码"</span>,<span class="string">"customClass"</span>:<span class="string">""</span>,<span class="string">"disabled"</span>:<span class="literal">false</span>,<span class="string">"labelWidth"</span>:<span class="number">100</span>,<span class="string">"isLabelWidth"</span>:<span class="literal">false</span>,<span class="string">"hidden"</span>:<span class="literal">false</span>,<span class="string">"dataBind"</span>:<span class="literal">true</span>,<span class="string">"showPassword"</span>:<span class="literal">true</span>,<span class="string">"remoteFunc"</span>:<span class="string">"func_1574859414883"</span>&#125;,<span class="string">"name"</span>:<span class="string">"密码"</span>,<span class="string">"novalid"</span>:&#123;&#125;,<span class="string">"key"</span>:<span class="string">"1574859414883"</span>,<span class="string">"model"</span>:<span class="string">"password"</span>,<span class="string">"rules"</span>:[&#123;<span class="string">"type"</span>:<span class="string">"string"</span>,<span class="string">"message"</span>:<span class="string">"密码格式不正确"</span>&#125;,&#123;<span class="string">"required"</span>:<span class="literal">true</span>,<span class="string">"message"</span>:<span class="string">"密码必须填写"</span>&#125;]&#125;,&#123;<span class="string">"type"</span>:<span class="string">"switch"</span>,<span class="string">"icon"</span>:<span class="string">"icon-switch"</span>,<span class="string">"options"</span>:&#123;<span class="string">"defaultValue"</span>:<span class="literal">false</span>,<span class="string">"required"</span>:<span class="literal">false</span>,<span class="string">"disabled"</span>:<span class="literal">false</span>,<span class="string">"customClass"</span>:<span class="string">""</span>,<span class="string">"labelWidth"</span>:<span class="number">100</span>,<span class="string">"isLabelWidth"</span>:<span class="literal">false</span>,<span class="string">"hidden"</span>:<span class="literal">false</span>,<span class="string">"dataBind"</span>:<span class="literal">true</span>,<span class="string">"remoteFunc"</span>:<span class="string">"func_1574859428914"</span>&#125;,<span class="string">"name"</span>:<span class="string">"记住密码"</span>,<span class="string">"novalid"</span>:&#123;&#125;,<span class="string">"key"</span>:<span class="string">"1574859428914"</span>,<span class="string">"model"</span>:<span class="string">"remember_pwd"</span>,<span class="string">"rules"</span>:[]&#125;]&#125;],<span class="string">"options"</span>:&#123;<span class="string">"gutter"</span>:<span class="number">0</span>,<span class="string">"justify"</span>:<span class="string">"center"</span>,<span class="string">"align"</span>:<span class="string">"top"</span>,<span class="string">"customClass"</span>:<span class="string">""</span>,<span class="string">"hidden"</span>:<span class="literal">false</span>,<span class="string">"remoteFunc"</span>:<span class="string">"func_1574859391509"</span>&#125;,<span class="string">"name"</span>:<span class="string">"栅格布局"</span>,<span class="string">"key"</span>:<span class="string">"1574859391509"</span>,<span class="string">"model"</span>:<span class="string">"grid"</span>,<span class="string">"rules"</span>:[]&#125;],<span class="string">"config"</span>:&#123;<span class="string">"labelWidth"</span>:<span class="number">100</span>,<span class="string">"labelPosition"</span>:<span class="string">"right"</span>,<span class="string">"size"</span>:<span class="string">"small"</span>,<span class="string">"customClass"</span>:<span class="string">""</span>&#125;&#125;,</span><br><span class="line">      editData: &#123;&#125;,</span><br><span class="line">      remoteFuncs: &#123;</span><br><span class="line">        </span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  methods: &#123;</span><br><span class="line">    handleSubmit () &#123;</span><br><span class="line">      <span class="keyword">this</span>.$refs.generateForm.getData().then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// Data check success</span></span><br><span class="line">        <span class="comment">// data- form data</span></span><br><span class="line">        alert(<span class="built_in">JSON</span>.stringify(data))</span><br><span class="line">      &#125;).catch(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// Data check failed</span></span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E6%8B%B7%E5%85%A5%E4%BB%A3%E7%A0%81.png" alt="拷入代码"></p>
+<p>在App.vue中引用该组件:</p>
+<p><img src="https://zjr2954.github.io/images/%E4%BD%BF%E7%94%A8%E7%BB%84%E4%BB%B6.png" alt="使用组件"></p>
+<h3 id="4-启动项目，查看效果"><a href="#4-启动项目，查看效果" class="headerlink" title="4.启动项目，查看效果"></a>4.启动项目，查看效果</h3><p>在IDEA的Terminal栏执行以下cmd命令启动项目（也可以在项目根目录下进入cmd执行）：</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run serve</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E9%A1%B9%E7%9B%AE%E5%90%AF%E5%8A%A8.png" alt="项目启动"></p>
+<p>运行效果如下：</p>
+<p><img src="https://zjr2954.github.io/images/%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C1.png" alt="运行效果1"></p>
+<p><img src="https://zjr2954.github.io/images/%E8%BF%90%E8%A1%8C%E6%95%88%E6%9E%9C2.png" alt="运行效果2"></p>
+<h3 id="5-获取表单数据"><a href="#5-获取表单数据" class="headerlink" title="5.获取表单数据"></a>5.获取表单数据</h3><p>官方教程以指明如何获取表单数据：</p>
+<p><img src="https://zjr2954.github.io/images/%E8%8E%B7%E5%8F%96%E8%A1%A8%E5%8D%95%E6%95%B0%E6%8D%AE.png" alt="获取表单数据"></p>
+<p>在前面自动生成的代码中已经含有该方法，直接测试即可。</p>
+<p><img src="https://zjr2954.github.io/images/%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90%E7%9A%84%E6%96%B9%E6%B3%95%E8%8E%B7%E5%8F%96%E8%A1%A8%E5%8D%95%E6%95%B0%E6%8D%AE.png" alt="自动生成的方法获取表单数据"></p>
+<p>点击submit按钮后会弹出窗口显示表单数据：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%B5%8B%E8%AF%95%E8%8E%B7%E5%8F%96%E8%A1%A8%E5%8D%95%E6%95%B0%E6%8D%AE.png" alt="测试获取表单数据"></p>
+<p><em>以上就是如何简单使用form-making工具生成前端组件的步骤，在<a href="http://docs.form.xiaoyaoji.cn/zh/manual/start.html" target="_blank" rel="noopener">官方教程</a>中还有更多使用技巧及介绍。</em></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/01/07/%E5%85%B3%E4%BA%8EVue%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8form-making%E5%B7%A5%E5%85%B7/">https://zjr2954.github.io/2020/01/07/%E5%85%B3%E4%BA%8EVue%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8form-making%E5%B7%A5%E5%85%B7/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2020/01/07/%E5%9C%A8frame%E9%87%8C%E9%9D%A2%E4%BD%BF%E7%94%A8%E9%93%BE%E6%8E%A5%E5%AE%9E%E7%8E%B0%E6%95%B4%E4%BD%93%E8%B7%B3%E8%BD%AC/" title="在frame里面使用链接实现整体跳转"><span>< PreviousPost</span><br><span class="prevTitle">在frame里面使用链接实现整体跳转</span></a><a class="nextSlogan" href="/2020/01/07/SSM%E5%AD%A6%E4%B9%A0%E9%98%B6%E6%AE%B5%E7%AC%94%E8%AE%B0/" title="SSM学习阶段笔记"><span>NextPost ></span><br><span class="nextTitle">SSM学习阶段笔记</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#关于Vue前端项目如何使用form-making工具"><span class="toc-number">1.</span> <span class="toc-text">关于Vue前端项目如何使用form-making工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、构建项目"><span class="toc-number">1.1.</span> <span class="toc-text">一、构建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、安装form-making库"><span class="toc-number">1.2.</span> <span class="toc-text">二、安装form-making库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、使用form-making"><span class="toc-number">1.3.</span> <span class="toc-text">三、使用form-making</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-使用依赖的库"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.使用依赖的库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-设计相应组件"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.设计相应组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-生成代码并拷入项目"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.生成代码并拷入项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-启动项目，查看效果"><span class="toc-number">1.3.4.</span> <span class="toc-text">4.启动项目，查看效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-获取表单数据"><span class="toc-number">1.3.5.</span> <span class="toc-text">5.获取表单数据</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

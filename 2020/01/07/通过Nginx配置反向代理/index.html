@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>通过Nginx配置反向代理 · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">通过Nginx配置反向代理</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2019-10-11</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="Nginx配置代理"> Nginx配置代理</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="通过Nginx配置反向代理"><a href="#通过Nginx配置反向代理" class="headerlink" title="通过Nginx配置反向代理"></a>通过Nginx配置反向代理</h1><p>记录一下如何通过Nginx配置反向代理的过程</p>
+<p>声明：Nginx的IP为192.168.0.101</p>
+<p>前端部署到Nginx的8082端口</p>
+<p>后端：192.168.0.103:8081</p>
+<h2 id="在http下配置一个upstream"><a href="#在http下配置一个upstream" class="headerlink" title="在http下配置一个upstream"></a>在http下配置一个upstream</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">upstream springboot &#123;</span><br><span class="line">	server 192.168.0.103:8081;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%BB%BAstream.jpg" alt="建stream"></p>
+<p>其中192.168.0.103:8080是我要转发到的域</p>
+<h2 id="在http下建一个server"><a href="#在http下建一个server" class="headerlink" title="在http下建一个server"></a>在http下建一个server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">		listen 8082;</span><br><span class="line">		server_name localhost;</span><br><span class="line">		location &#x2F; &#123;</span><br><span class="line">			root dist;</span><br><span class="line">			index index.html;</span><br><span class="line">			try_files $uri $uri&#x2F; @router;</span><br><span class="line">		&#125;</span><br><span class="line">		location @router &#123;</span><br><span class="line">			rewrite ^.*$ &#x2F;index.html last;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%89%8D%E7%AB%AF%E9%A1%B9%E7%9B%AE%E7%9A%84%E9%83%A8%E7%BD%B2.jpg" alt="前端项目的部署"></p>
+<p>这个server用于部署前端项目，将前端项目部署在8082端口，监听8082端口，根文件夹为dist文件夹，启动首页为index.html，防止路径刷新报错，配置一个@router，重写路径到index.html</p>
+<h2 id="再在http下建一个server"><a href="#再在http下建一个server" class="headerlink" title="再在http下建一个server"></a>再在http下建一个server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">		listen 8081;</span><br><span class="line">		server_name localhost;</span><br><span class="line">		location &#x2F; &#123;</span><br><span class="line">			add_header Access-Control-Allow-Origin *;</span><br><span class="line">    			add_header Access-Control-Allow-Methods &#39;GET, POST, OPTIONS&#39;;</span><br><span class="line">    			add_header Access-Control-Allow-Headers &#39;DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization&#39;;</span><br><span class="line">			if ($request_method &#x3D; &#39;OPTIONS&#39;) &#123;</span><br><span class="line">     				return 204;</span><br><span class="line">   			&#125;</span><br><span class="line">			#proxy_pass http:&#x2F;&#x2F;192.168.0.103:8081;</span><br><span class="line">			proxy_set_header X-real-ip $remote_addr;</span><br><span class="line">			proxy_pass http:&#x2F;&#x2F;springboot;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E8%BD%AC%E5%8F%91%E5%88%B0%E5%90%8E%E7%AB%AF%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%9F%9F.jpg" alt="转发到后端项目的域"></p>
+<p>这个server用于部署后端项目，将前端项目部署在8081端口，监听8081端口，添加跨域所需的各种请求头，然后转发到之前配置的upstream。处理完成后重启Nginx服务器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo .&#x2F;nginx -s reload</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>注意：前端项目直接请求Nginx的域，不再访问后端项目所在的域。</strong></p>
+<p><img src="https://zjr2954.github.io/images/%E5%89%8D%E7%AB%AF%E8%AF%B7%E6%B1%82%E7%9A%84%E5%9F%9F.jpg" alt="前端请求的域"></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/01/07/%E9%80%9A%E8%BF%87Nginx%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">https://zjr2954.github.io/2020/01/07/%E9%80%9A%E8%BF%87Nginx%E9%85%8D%E7%BD%AE%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2020/01/07/%E9%80%9A%E8%BF%87%E6%97%A0%E7%BA%BF%E5%B1%80%E5%9F%9F%E8%AE%BF%E9%97%AE%E7%BD%91%E8%87%AA%E5%B7%B1%E7%9A%84JavaWeb/" title="通过无线局域网访问自己的JavaWeb"><span>< PreviousPost</span><br><span class="prevTitle">通过无线局域网访问自己的JavaWeb</span></a><a class="nextSlogan" href="/2020/01/07/%E6%BF%80%E6%B4%BBWindows%E5%92%8Coffice/" title="激活Windows和office"><span>NextPost ></span><br><span class="nextTitle">激活Windows和office</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#通过Nginx配置反向代理"><span class="toc-number">1.</span> <span class="toc-text">通过Nginx配置反向代理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#在http下配置一个upstream"><span class="toc-number">1.1.</span> <span class="toc-text">在http下配置一个upstream</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在http下建一个server"><span class="toc-number">1.2.</span> <span class="toc-text">在http下建一个server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#再在http下建一个server"><span class="toc-number">1.3.</span> <span class="toc-text">再在http下建一个server</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>

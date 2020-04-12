@@ -1,0 +1,154 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Vue+Springboot+UEditor（1） · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">Vue+Springboot+UEditor（1）</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2020-03-14</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="Vue+UEditor+kityformula"> Vue+UEditor+kityformula</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="关于如何在Vue-项目中使用富文本编辑器（UEditor）"><a href="#关于如何在Vue-项目中使用富文本编辑器（UEditor）" class="headerlink" title="关于如何在Vue 项目中使用富文本编辑器（UEditor）"></a>关于如何在Vue 项目中使用富文本编辑器（UEditor）</h1><p>最近在学习项目所需要的技术时，发现需要学习如何在项目中使用富文本编辑器，常用的富文本编辑器有很多，如：CKEditor、KindEditor、UEditor等等，但是我现在的项目中需要使用数学公式，在众多富文本编辑器中，我选择出了适合我项目的那一个，就是UEditor，百度公司的产品，技术过硬，功能丰富。下面介绍如何在Vue+Springboot项目中使用UEditor，以及如何引用数学公式插件kityformula，本文为教程第一篇，仅记录如何在Vue项目中使用UEditor和数学公式插件kityformula。</p>
+<h2 id="效果图"><a href="#效果图" class="headerlink" title="效果图"></a>效果图</h2><p><img src="https://zjr2954.github.io/images/ueditor%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%89%8D.jpg" alt="ueditor上传文件前"></p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E4%B8%AD.jpg" alt="ueditor上传文件中"></p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E5%90%8E.jpg" alt="ueditor上传文件后"></p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E4%BD%BF%E7%94%A8%E5%85%AC%E5%BC%8F.jpg" alt="ueditor使用公式"></p>
+<h2 id="开始学习如何使用UEditor"><a href="#开始学习如何使用UEditor" class="headerlink" title="开始学习如何使用UEditor"></a>开始学习如何使用UEditor</h2><p>首先看UEditor的官网：</p>
+<p><a href="http://ueditor.baidu.com/website/" target="_blank" rel="noopener">UEditor官网网址</a>：<a href="http://ueditor.baidu.com/website/" target="_blank" rel="noopener">http://ueditor.baidu.com/website/</a></p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E5%AE%98%E7%BD%91.jpg" alt="ueditor官网"></p>
+<h3 id="下载UEditor"><a href="#下载UEditor" class="headerlink" title="下载UEditor"></a>下载UEditor</h3><p>点击上图下载链接进入下载页面：</p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E4%B8%8B%E8%BD%BD.jpg" alt="ueditor下载"></p>
+<p>我下载的是jsp版的，理论上其他版本也可以使用，因为我们并没有在项目中使用jsp</p>
+<h3 id="初始化Vue项目"><a href="#初始化Vue项目" class="headerlink" title="初始化Vue项目"></a>初始化Vue项目</h3><p>创建Vue项目不是本文的重点，不过多赘述，创建完成后的项目结构应与下图类似：</p>
+<p><img src="https://zjr2954.github.io/images/vue%E9%A1%B9%E7%9B%AE%E5%88%9D%E5%A7%8B%E7%BB%93%E6%9E%84.jpg" alt="vue项目初始结构"></p>
+<p>安装项目所需依赖</p>
+<p>安装axios</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install axios -s</span><br></pre></td></tr></table></figure>
+
+<p>安装vue-ueditor-wrap</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install vue-ueditor-wrap -s</span><br></pre></td></tr></table></figure>
+
+<p><em>vue-ueditor-wrap依赖可以帮助我们引入和初始化ueditor</em></p>
+<p><img src="https://zjr2954.github.io/images/vue%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96.jpg" alt="vue安装依赖"></p>
+<p>将前面从UEditor官网下载的压缩包解压后放入Vue项目的public目录下</p>
+<p><img src="https://zjr2954.github.io/images/vue%E5%BC%95%E5%85%A5ueditor.jpg" alt="vue引入ueditor"></p>
+<p><em>很多文章在后面一步会配置public/index.html文件引入ueditor的依赖js文件，但是我在测试过程中发现不在那里也可以，同时在public/UEditor/index.html文件中发现它已经引入过了那些依赖，可能是因为我们安装了vue-ueditor-wrap，它帮我们加载了public/UEditor/index.html文件，同时引入了ueditor依赖。</em></p>
+<h3 id="创建UEditor组件"><a href="#创建UEditor组件" class="headerlink" title="创建UEditor组件"></a>创建UEditor组件</h3><p><img src="https://zjr2954.github.io/images/vue%E5%88%9B%E5%BB%BAueditor%E7%BB%84%E4%BB%B6.jpg" alt="vue创建ueditor组件"></p>
+<p>UEditor组件的代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;vue-editor v-model&#x3D;&quot;text&quot; :config&#x3D;&quot;myConfig&quot;&#x2F;&gt;</span><br><span class="line">        &lt;button @click&#x3D;&quot;click&quot;&gt;click&lt;&#x2F;button&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">    import VueEditor from &#39;vue-ueditor-wrap&#39;</span><br><span class="line"></span><br><span class="line">    export default &#123;</span><br><span class="line">        name: &quot;u-editor&quot;,</span><br><span class="line">        components: &#123;</span><br><span class="line">            VueEditor</span><br><span class="line">        &#125;,</span><br><span class="line">        data() &#123;</span><br><span class="line">            return &#123;</span><br><span class="line">                text: &#39;&#39;,</span><br><span class="line">                myConfig: &#123;</span><br><span class="line">                    UEDITOR_HOME_URL: &#39;&#x2F;UEditor&#x2F;&#39;,</span><br><span class="line">                    autoHeightEnabled: false,</span><br><span class="line">                    initialFrameWidth: 1000,</span><br><span class="line">                    initialFrameHeight: 540,</span><br><span class="line">                    toolbars: [[</span><br><span class="line">                        &#39;fullscreen&#39;, &#39;source&#39;, &#39;|&#39;, &#39;undo&#39;, &#39;redo&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;bold&#39;, &#39;italic&#39;, &#39;underline&#39;, &#39;fontborder&#39;, &#39;strikethrough&#39;, &#39;superscript&#39;, &#39;subscript&#39;, &#39;removeformat&#39;, &#39;formatmatch&#39;, &#39;autotypeset&#39;, &#39;blockquote&#39;, &#39;pasteplain&#39;, &#39;|&#39;, &#39;forecolor&#39;, &#39;backcolor&#39;, &#39;insertorderedlist&#39;, &#39;insertunorderedlist&#39;, &#39;selectall&#39;, &#39;cleardoc&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;rowspacingtop&#39;, &#39;rowspacingbottom&#39;, &#39;lineheight&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;customstyle&#39;, &#39;paragraph&#39;, &#39;fontfamily&#39;, &#39;fontsize&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;directionalityltr&#39;, &#39;directionalityrtl&#39;, &#39;indent&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;justifyleft&#39;, &#39;justifycenter&#39;, &#39;justifyright&#39;, &#39;justifyjustify&#39;, &#39;|&#39;, &#39;touppercase&#39;, &#39;tolowercase&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;link&#39;, &#39;unlink&#39;, &#39;anchor&#39;, &#39;|&#39;, &#39;imagenone&#39;, &#39;imageleft&#39;, &#39;imageright&#39;, &#39;imagecenter&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;simpleupload&#39;, &#39;insertimage&#39;, &#39;emotion&#39;, &#39;scrawl&#39;, &#39;insertvideo&#39;, &#39;music&#39;, &#39;attachment&#39;, &#39;map&#39;, &#39;gmap&#39;, &#39;insertframe&#39;, &#39;insertcode&#39;, &#39;webapp&#39;, &#39;pagebreak&#39;, &#39;template&#39;, &#39;background&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;horizontal&#39;, &#39;date&#39;, &#39;time&#39;, &#39;spechars&#39;, &#39;snapscreen&#39;, &#39;wordimage&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;inserttable&#39;, &#39;deletetable&#39;, &#39;insertparagraphbeforetable&#39;, &#39;insertrow&#39;, &#39;deleterow&#39;, &#39;insertcol&#39;, &#39;deletecol&#39;, &#39;mergecells&#39;, &#39;mergeright&#39;, &#39;mergedown&#39;, &#39;splittocells&#39;, &#39;splittorows&#39;, &#39;splittocols&#39;, &#39;charts&#39;, &#39;|&#39;,</span><br><span class="line">                        &#39;print&#39;, &#39;preview&#39;, &#39;searchreplace&#39;, &#39;drafts&#39;, &#39;help&#39;</span><br><span class="line">                    ]]</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        methods: &#123;</span><br><span class="line">            click() &#123;</span><br><span class="line">                console.log(this.text);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>该组件可以自定义富文本编辑器的一些属性配置，如宽度、高度、菜单项等，具体配置可以查看<a href="http://fex.baidu.com/ueditor/" target="_blank" rel="noopener">官方文档</a>，或查看public/UEditor/ueditor.config.js文件，如果不在代码中自定义这些配置，将从该配置文件读取默认配置</p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E5%AE%8C%E6%95%B4%E9%85%8D%E7%BD%AE.jpg" alt="ueditor完整配置"></p>
+<h3 id="使用UEditor组件"><a href="#使用UEditor组件" class="headerlink" title="使用UEditor组件"></a>使用UEditor组件</h3><p>在App.vue文件中引用UEditor组件</p>
+<p><img src="https://zjr2954.github.io/images/vue%E4%BD%BF%E7%94%A8ueditor%E7%BB%84%E4%BB%B6.jpg" alt="vue使用ueditor组件"></p>
+<h3 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h3><p>至此已经可以运行项目看见效果了</p>
+<p><img src="https://zjr2954.github.io/images/%E8%BF%90%E8%A1%8C%E6%88%AA%E5%9B%BE%E4%B8%80.jpg" alt="运行截图一"></p>
+<p>可以看看富文本是如何渲染及处理的，利用我们前面在组件中创建的按钮click，将文本内容在控制台打印出来</p>
+<p><img src="https://zjr2954.github.io/images/%E8%BF%90%E8%A1%8C%E6%88%AA%E5%9B%BE%E4%BA%8C.jpg" alt="运行截图二"></p>
+<p>至此已经简单实现了UEditor的引入</p>
+<p>后面我们说说如何引入数学公式插件</p>
+<h3 id="下载kityformula"><a href="#下载kityformula" class="headerlink" title="下载kityformula"></a>下载kityformula</h3><p>再次访问UEditor官网，点击”插件”链接</p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E5%AE%98%E7%BD%91%E4%B8%8B%E8%BD%BD%E6%8F%92%E4%BB%B6.jpg" alt="ueditor官网下载插件"></p>
+<p>找到kityformula并下载下来</p>
+<p><img src="https://zjr2954.github.io/images/kityformula%E4%B8%8B%E8%BD%BD.jpg" alt="kityformula下载"></p>
+<h3 id="在UEditor中引入kityformula插件"><a href="#在UEditor中引入kityformula插件" class="headerlink" title="在UEditor中引入kityformula插件"></a>在UEditor中引入kityformula插件</h3><p>将下载后的kityformula压缩包解压后放入public/UEditor目录下</p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E5%BC%95%E5%85%A5kityformula.jpg" alt="ueditor引入kityformula"></p>
+<h3 id="加载kityformula"><a href="#加载kityformula" class="headerlink" title="加载kityformula"></a>加载kityformula</h3><p>在public/index.html文件中加载kityformula插件的依赖js文件</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--引入kityformula公式插件，由于加载顺序问题，这里需加载UEditor一次--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> <span class="attr">src</span>=<span class="string">"./UEditor/ueditor.config.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> <span class="attr">src</span>=<span class="string">"./UEditor/ueditor.all.min.js"</span>&gt;</span> <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> <span class="attr">src</span>=<span class="string">"./UEditor/lang/zh-cn/zh-cn.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> <span class="attr">src</span>=<span class="string">"./UEditor/kityformula-plugin/addKityFormulaDialog.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> <span class="attr">src</span>=<span class="string">"./UEditor/kityformula-plugin/getKfContent.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span> <span class="attr">src</span>=<span class="string">"./UEditor/kityformula-plugin/defaultFilterFix.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/vue%E5%8A%A0%E8%BD%BDkityformula%E4%BE%9D%E8%B5%96.jpg" alt="vue加载kityformula依赖"></p>
+<p><em>在public/UEditor/index.html中加载kityformula依赖好像并没有效果，可能因为加载顺序问题，最简单的办法就是在public/index.html中加载这些依赖，但是这些依赖又需要读取ueditor的配置，所以在这里重复加载了一次ueditor的依赖。</em></p>
+<p>最后在UEditor组件中配置UEditor工具栏，将kityformula显示在工具栏上</p>
+<p><img src="https://zjr2954.github.io/images/ueditor%E4%B8%AD%E6%98%BE%E7%A4%BAkityformula.jpg" alt="ueditor中显示kityformula"></p>
+<p>运行项目查看效果</p>
+<p><img src="https://zjr2954.github.io/images/kityformula%E5%BC%95%E5%85%A5%E6%88%90%E5%8A%9F.jpg" alt="kityformula引入成功"></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/03/14/Vue+Springboot+UEditor%EF%BC%881%EF%BC%89/">https://zjr2954.github.io/2020/03/14/Vue+Springboot+UEditor%EF%BC%881%EF%BC%89/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="prevSlogan" href="/2020/03/16/Vue+Springboot+UEditor%EF%BC%882%EF%BC%89/" title="Vue+Springboot+UEditor（2）"><span>< PreviousPost</span><br><span class="prevTitle">Vue+Springboot+UEditor（2）</span></a><a class="nextSlogan" href="/2020/01/07/%E9%85%8D%E7%BD%AE%E8%B7%A8%E5%9F%9F%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E6%B3%95/" title="配置跨域的三种方法"><span>NextPost ></span><br><span class="nextTitle">配置跨域的三种方法</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#关于如何在Vue-项目中使用富文本编辑器（UEditor）"><span class="toc-number">1.</span> <span class="toc-text">关于如何在Vue 项目中使用富文本编辑器（UEditor）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#效果图"><span class="toc-number">1.1.</span> <span class="toc-text">效果图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开始学习如何使用UEditor"><span class="toc-number">1.2.</span> <span class="toc-text">开始学习如何使用UEditor</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载UEditor"><span class="toc-number">1.2.1.</span> <span class="toc-text">下载UEditor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化Vue项目"><span class="toc-number">1.2.2.</span> <span class="toc-text">初始化Vue项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建UEditor组件"><span class="toc-number">1.2.3.</span> <span class="toc-text">创建UEditor组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用UEditor组件"><span class="toc-number">1.2.4.</span> <span class="toc-text">使用UEditor组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行项目"><span class="toc-number">1.2.5.</span> <span class="toc-text">运行项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#下载kityformula"><span class="toc-number">1.2.6.</span> <span class="toc-text">下载kityformula</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在UEditor中引入kityformula插件"><span class="toc-number">1.2.7.</span> <span class="toc-text">在UEditor中引入kityformula插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#加载kityformula"><span class="toc-number">1.2.8.</span> <span class="toc-text">加载kityformula</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
