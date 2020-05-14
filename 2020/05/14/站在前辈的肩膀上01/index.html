@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>站在前辈的肩膀上01 · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">站在前辈的肩膀上01</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2020-05-14</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="站在前辈的肩膀上01"> 站在前辈的肩膀上01</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="站在前辈的肩膀上01"><a href="#站在前辈的肩膀上01" class="headerlink" title="站在前辈的肩膀上01"></a>站在前辈的肩膀上01</h1><p><em>最近在看一个网上的前后端分离项目，记录一下所思所悟。项目gitee地址：<a href="https://gitee.com/zhuimengshaonian/wisdom-education" target="_blank" rel="noopener">https://gitee.com/zhuimengshaonian/wisdom-education</a></em></p>
+<h2 id="项目后端"><a href="#项目后端" class="headerlink" title="项目后端"></a>项目后端</h2><p>首先，来看看项目的目录划分：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AF%E6%A0%B9%E7%9B%AE%E5%BD%95.jpg" alt="智慧云平台后端根目录"></p>
+<p>从后端项目的目录划分可以看出，采用了父子项目的开发模式，先从整体上逐一了解各子目录的意义。</p>
+<h3 id="技术栈说明"><a href="#技术栈说明" class="headerlink" title="技术栈说明"></a>技术栈说明</h3><p>项目主人在readme里面给了说明：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AF%E6%8A%80%E6%9C%AF%E6%A0%88%E8%AF%B4%E6%98%8E.jpg" alt="智慧云平台后端技术栈说明"></p>
+<p>SpringBoot是项目根基所在，Mybatis是SpringBoot的好搭档，比较常用的数据持久化框架，Shiro安全框架（我学过了SpringSecurity，还未学过Shiro，据说Shiro更容易上手），简单易用，mysql就没什么好说的了，Redis是提高系统性能的不二选择。</p>
+<h3 id="模块说明"><a href="#模块说明" class="headerlink" title="模块说明"></a>模块说明</h3><p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AFdb%E7%9B%AE%E5%BD%95.jpg" alt="智慧云平台后端db目录"></p>
+<p>显然，该目录下放的是数据库设计相关，包括sql脚本，本目录应该是为了方便别人查看此项目的。</p>
+<p>剩下的几个目录，项目主人在项目的readme里面给了说明：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AF%E6%A8%A1%E5%9D%97%E8%AF%B4%E6%98%8E.jpg" alt="智慧云平台后端模块说明"></p>
+<p>从设计上看，父项目套子项目，此项目层次分明，非常灵活，适合大型项目的维护，这也符合近来微服务的思想理念（我对微服务也仅仅只了解皮毛）。这种设计方式，在很多大型项目中非常常见。</p>
+<h3 id="详细说明"><a href="#详细说明" class="headerlink" title="详细说明"></a>详细说明</h3><p>先看common模块：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AFcommon%E6%A8%A1%E5%9D%97.jpg" alt="智慧云平台后端common模块"></p>
+<p>其中baidu包下ueditor是项目引入了UEditor富文本编辑器，后端的相关配置，education包下是一些项目自己的公用代码，其中annotation包下是一些自定义的注解，base包下是一些基础controller和mapper，cache包下是一些Redis相关，component包下是一个SpringBeanMaRnanger，方便管理Spring容器中的bean，config包下是系统bean配置，constants包下是系统常量类和枚举类，disabled包下就只有一个Enable注解，exception包下是一些自定义异常类，interceptor包下是一些自定义拦截器，model包下是一些加工后的实体类，template包下的一些模板类供业务层使用，utils包下是一些工具类。</p>
+<p>mapper模块：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AFmapper%E6%A8%A1%E5%9D%97.jpg" alt="智慧云平台后端mapper模块"></p>
+<p>显然这是采用Mybatis的xml版进行持久化的模块，resources中的mapper目录下是一些Mybatis相关的xml文件，com.education.mapper包下是一些mapper接口。</p>
+<p>service模块：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AFservice%E6%A8%A1%E5%9D%97.jpg" alt="智慧云平台后端service模块"></p>
+<p>service模块是整个后端系统的业务逻辑部分，对整个系统七折至关重要的作用，其中core包下有一个公共接口，供上层调用，course、school、system包下是主要的业务逻辑类，task包下是一些任务相关的配置，具体的使用还需要进一步探究，webSocket包下是一些webSocket配置，具体使用还需要进一步探究，BaseService是一些基础公用的业务逻辑抽象类，其中包含了shiro操作、分页查询操作、获取用户信息操作等，DocumentService和WebSocketMessageService这两个类还需要进一步探究。</p>
+<p>student-api模块：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AFstudent-api%E6%A8%A1%E5%9D%97.jpg" alt="智慧云平台后端student-api模块"></p>
+<p>整个模块给学生端前端提供接口，controller包下是一些供前端调用的a’pi接口，interceptor包下是一些前端api接口拦截器api和系统配置。</p>
+<p>admin-api模块：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%90%8E%E7%AB%AFadmin-api%E6%A8%A1%E5%9D%97.jpg" alt="智慧云平台后端admin-api模块"></p>
+<p>此模块和student-api模块类似，其中多一个shiro包，其中包括shiro的配置、shiro+Redis缓存配置、分布式session配置、系统权限认证等，另外，resources/template目录中的paper.ftl文件作用需要进一步探究。另外还有一些application.yml是SpringBoot的主配置文件，config-json文件是ueditor返回给前端的配置文件，ehcache是缓存配置文件。</p>
+<h2 id="前端项目"><a href="#前端项目" class="headerlink" title="前端项目"></a>前端项目</h2><p>该系统有两个前端项目，一个是系统管理平台，一个是学生端，采用的技术栈差不多，同样来看看项目的目录划分：</p>
+<p>系统管理平台前端：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86%E5%89%8D%E7%AB%AF%E6%A0%B9%E7%9B%AE%E5%BD%95.jpg" alt="智慧云平台系统管理前端根目录"></p>
+<p>学生端前端：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%AD%A6%E7%94%9F%E7%AB%AF%E5%89%8D%E7%AB%AF%E6%A0%B9%E7%9B%AE%E5%BD%95.jpg" alt="智慧云平台学生端前端根目录"></p>
+<p>相对后端项目来说，前端项目看起来更简单。</p>
+<h3 id="技术栈说明-1"><a href="#技术栈说明-1" class="headerlink" title="技术栈说明"></a>技术栈说明</h3><p>项目主人在readme里面给了说明：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E6%A0%88%E8%AF%B4%E6%98%8E.jpg" alt="智慧云平台前端技术栈说明"></p>
+<p>Vue是项目核心所在，Vuex、vue-router、axios是学Vue必不可少的技术，Vuex负责管理项目公共资源，vue-router负责页面的路由跳转，axios通过异步请求与后端数据交互，至于Element-UI是一个UI框架，与Vue融合较好，在Vue项目中采用Element-UI基本上是主流选择了。</p>
+<h3 id="模块说明-1"><a href="#模块说明-1" class="headerlink" title="模块说明"></a>模块说明</h3><p>这里直接引用项目主人对两个项目的模块说明：<br><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E8%AF%B4%E6%98%8E.jpg" alt="智慧云平台前端模块说明"></p>
+<p>模块划分不像后端项目那样容易借鉴，前端项目的模块划分与实际项目功能模块紧密联系，不同项目的划分都不一样，不过项目的目录划分可以说说，项目根目录就是基本的Vue项目根目录，不在此深究，下面是前端项目src下的目录结构：</p>
+<p>系统管理平台：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86%E5%89%8D%E7%AB%AFsrc%E7%9B%AE%E5%BD%95.jpg" alt="智慧云平台系统管理前端src目录"></p>
+<p>学生端前端：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%99%BA%E6%85%A7%E4%BA%91%E5%B9%B3%E5%8F%B0%E5%AD%A6%E7%94%9F%E7%AB%AF%E5%89%8D%E7%AB%AFsrc%E7%9B%AE%E5%BD%95.jpg" alt="智慧云平台学生端前端src目录"></p>
+<p>两个项目的内容还是有些不太一样，不过基本模块不会相差很多。</p>
+<h3 id="详细说明-1"><a href="#详细说明-1" class="headerlink" title="详细说明"></a>详细说明</h3><p>相对于后端项目来说，前端项目确实没什么好说的，学过vue的基本上都可以看懂这里的目录划分和文件含义，另外，目前这个前端项目还有诸多问题没解决，所以简单了解一下这两个前端项目即可。</p>
+<p>assets目录下放的一般是一些静态资源文件，如图片、css文件；components目录下就是一些自己封装的组件了；element-ui目录是用来引入element-ui这个UI框架的index文件；element-ui-theme目录下放的是定制的elemen-ui主题；icons目录下放的是引入字体图标相关的文件，因为element-ui提供的图标库不够丰富，需要自己引入个性化图标；mock目录下放的是mock相关，目前我对mock仅仅只是了解过，此技术还要进一步探究；router目录下放的是vue路由相关配置；store目录下放的是vuex相关配置；utils目录下放的是一些工具类，包括api接口、校验工具等；views目录下放的是页面文件。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><em>最后，看完这些后，最大的收获是学习了一个完整的项目由哪些子模块组成，以及如何划分这些子模块，另外，发现这个项目里面还有很多不懂的地方，需要进一步学习后再来看，读这个项目为自己的学习提供了不错的方向。</em></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/05/14/%E7%AB%99%E5%9C%A8%E5%89%8D%E8%BE%88%E7%9A%84%E8%82%A9%E8%86%80%E4%B8%8A01/">https://zjr2954.github.io/2020/05/14/%E7%AB%99%E5%9C%A8%E5%89%8D%E8%BE%88%E7%9A%84%E8%82%A9%E8%86%80%E4%B8%8A01/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2020/05/09/Vue%E5%BC%95%E5%85%A5i18n%E5%9B%BD%E9%99%85%E5%8C%96/" title="Vue引入i18n国际化"><span>NextPost ></span><br><span class="nextTitle">Vue引入i18n国际化</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#站在前辈的肩膀上01"><span class="toc-number">1.</span> <span class="toc-text">站在前辈的肩膀上01</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#项目后端"><span class="toc-number">1.1.</span> <span class="toc-text">项目后端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#技术栈说明"><span class="toc-number">1.1.1.</span> <span class="toc-text">技术栈说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块说明"><span class="toc-number">1.1.2.</span> <span class="toc-text">模块说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#详细说明"><span class="toc-number">1.1.3.</span> <span class="toc-text">详细说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前端项目"><span class="toc-number">1.2.</span> <span class="toc-text">前端项目</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#技术栈说明-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">技术栈说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块说明-1"><span class="toc-number">1.2.2.</span> <span class="toc-text">模块说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#详细说明-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">详细说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.3.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
