@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>Spring常用注解 · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">Spring常用注解</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2020-07-15</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="Spring常用注解"> Spring常用注解</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="Spring常用注解"><a href="#Spring常用注解" class="headerlink" title="Spring常用注解"></a>Spring常用注解</h1><p><em>记录Spring中常用注解，以便回顾。</em></p>
+<h2 id="一、注册bean对象"><a href="#一、注册bean对象" class="headerlink" title="一、注册bean对象"></a>一、注册bean对象</h2><h3 id="1-1-Component"><a href="#1-1-Component" class="headerlink" title="1.1@Component"></a>1.1@Component</h3><p>作用：</p>
+<p>调用无参构造方法创建一个bean对象，并存入spring的IOC容器，交给spring容器管理。相当于在xml中配置一个bean。</p>
+<p>属性：</p>
+<p>value：指定bean的id。如果不指定value属性，默认bean的id是当前类的类名（首字母小写）。</p>
+<h3 id="1-2-Controller"><a href="#1-2-Controller" class="headerlink" title="1.2@Controller"></a>1.2@Controller</h3><p>作用：</p>
+<p>与@Component相同，一般用于表现层。</p>
+<p>属性：</p>
+<p>与@Component相同。</p>
+<h3 id="1-3-Service"><a href="#1-3-Service" class="headerlink" title="1.3@Service"></a>1.3@Service</h3><p>作用：</p>
+<p>与@Component相同，一般用于业务层。</p>
+<p>属性：</p>
+<p>与@Component相同。</p>
+<h3 id="1-4-Repository"><a href="#1-4-Repository" class="headerlink" title="1.4@Repository"></a>1.4@Repository</h3><p>作用：</p>
+<p>与@Component相同，一般用于持久层。</p>
+<p>属性：</p>
+<p>与@Component相同。</p>
+<h3 id="1-5-Bean"><a href="#1-5-Bean" class="headerlink" title="1.5@Bean"></a>1.5@Bean</h3><p>作用：</p>
+<p>用于把当前方法的返回值作为bean对象存入spring的IOC容器中。</p>
+<p>属性：</p>
+<p>name：用于指定bean的id。不写时，默认值是当前方法的名称。当使用注解配置方法时，如果方法有参数，spring会去容器中查找有没有可用的bean对象，查找的方式和Autowired注解是一样的。</p>
+<h2 id="二、依赖注入"><a href="#二、依赖注入" class="headerlink" title="二、依赖注入"></a>二、依赖注入</h2><h3 id="2-1-Autowired"><a href="#2-1-Autowired" class="headerlink" title="2.1@Autowired"></a>2.1@Autowired</h3><p>作用：</p>
+<p>按类型（byType）动态装配bean，如果想按名称装配，需结合@Qualifier注解使用。</p>
+<p>属性：</p>
+<p>required：是否不允许为null，默认为true。</p>
+<h3 id="2-2-Qualifierid"><a href="#2-2-Qualifierid" class="headerlink" title="2.2@Qualifierid"></a>2.2@Qualifierid</h3><p>作用：</p>
+<p>在自动按类型注入的基础上，再按名称（id）注入，在给字段注入时不能独立使用，必须和@Autowired一起使用，但是给方法参数注入时，可以独立使用。</p>
+<p>属性：</p>
+<p>value：用于指定要注入的bean的id。</p>
+<h3 id="2-3-Resource"><a href="#2-3-Resource" class="headerlink" title="2.3@Resource"></a>2.3@Resource</h3><p>作用：</p>
+<p>按名称（byName）动态装配bean，如果没有指定name，则注解在字段上时，默认取（name = 字段名称）装配，如果注解在setter方法上时，默认取（name = 属性名称）装配。</p>
+<p>属性：</p>
+<p>name：用于指定要注入的bean的id。</p>
+<p>type：用于指定要注入的bean的type。</p>
+<p><em>装配顺序：</em></p>
+<p><em>1、如果同时指定name和type属性，则找到唯一匹配的bean装配，未找到则抛异常；</em></p>
+<p><em>2、如果指定name属性，则按照名称（byName）装配，未找到则抛异常；</em></p>
+<p><em>3、如果指定type属性，则按照类型（byType）装配，未找到或者找到多个则抛异常；</em></p>
+<p><em>4、既未指定name属性，又未指定type属性，则按照名称（byName）装配；如果未找到，则按照类型（byType）装配。</em></p>
+<h3 id="2-4-Value"><a href="#2-4-Value" class="headerlink" title="2.4@Value"></a>2.4@Value</h3><p>作用：</p>
+<p>将外部的值动态注入到bean中，可以给基本类型数据和String类型数据的变量注入数据。</p>
+<h2 id="三、改变bean作用范围"><a href="#三、改变bean作用范围" class="headerlink" title="三、改变bean作用范围"></a>三、改变bean作用范围</h2><h3 id="3-1-Scope"><a href="#3-1-Scope" class="headerlink" title="3.1@Scope"></a>3.1@Scope</h3><p>作用：</p>
+<p>指定bean的作用范围。</p>
+<p>属性：</p>
+<p>value：</p>
+<p>1）singleton：单例。</p>
+<p>2）prototype：多例。</p>
+<p>3）request：每一次HTTP请求都会产生一个新的bean，同时该bean仅在当前request内有效。</p>
+<p>4）session：每一次HTTP请求都会产生一个新的bean，同时该bean仅在当前session内有效。</p>
+<p>5）global session：类似于标准的HTTP Session作用域，仅在基于portlet的web应用中才有意义。</p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/07/15/Spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/">https://zjr2954.github.io/2020/07/15/Spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2020/05/14/%E7%AB%99%E5%9C%A8%E5%89%8D%E8%BE%88%E7%9A%84%E8%82%A9%E8%86%80%E4%B8%8A01/" title="站在前辈的肩膀上01"><span>NextPost ></span><br><span class="nextTitle">站在前辈的肩膀上01</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Spring常用注解"><span class="toc-number">1.</span> <span class="toc-text">Spring常用注解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、注册bean对象"><span class="toc-number">1.1.</span> <span class="toc-text">一、注册bean对象</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Component"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1@Component</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Controller"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2@Controller</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Service"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3@Service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-Repository"><span class="toc-number">1.1.4.</span> <span class="toc-text">1.4@Repository</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-Bean"><span class="toc-number">1.1.5.</span> <span class="toc-text">1.5@Bean</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、依赖注入"><span class="toc-number">1.2.</span> <span class="toc-text">二、依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Autowired"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1@Autowired</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Qualifierid"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2@Qualifierid</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Resource"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3@Resource</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Value"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4@Value</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、改变bean作用范围"><span class="toc-number">1.3.</span> <span class="toc-text">三、改变bean作用范围</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Scope"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1@Scope</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
