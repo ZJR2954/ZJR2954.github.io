@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>CentOS7安装Nginx · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">CentOS7安装Nginx</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2020-08-01</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="CentOS7安装Nginx"> CentOS7安装Nginx</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="CentOS7安装Nginx"><a href="#CentOS7安装Nginx" class="headerlink" title="CentOS7安装Nginx"></a>CentOS7安装Nginx</h1><p><em>记录安装步骤和命令以便日后查找</em></p>
+<h2 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h2><h3 id="1、准备"><a href="#1、准备" class="headerlink" title="1、准备"></a>1、准备</h3><p>先查看自己的CentOS上面是否有gcc，一般租的服务器都有gcc，用以下命令查看gcc版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -v</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E6%9F%A5%E7%9C%8Bgcc%E7%89%88%E6%9C%AC.png" alt="查看gcc版本"></p>
+<p>如果没有安装gcc，用以下命令安装gcc：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install gcc</span><br></pre></td></tr></table></figure>
+
+<p>Nginx的服务需要依赖pcre、zlib、openssl，故需要先安装这三个依赖。</p>
+<h3 id="2、安装pcre"><a href="#2、安装pcre" class="headerlink" title="2、安装pcre"></a>2、安装pcre</h3><p>用以下命令安装pcre：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install pcre pcre-devel</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/yum%E5%AE%89%E8%A3%85pcre.png" alt="yum安装pcre"></p>
+<h3 id="3、安装zlib"><a href="#3、安装zlib" class="headerlink" title="3、安装zlib"></a>3、安装zlib</h3><p>用以下命令安装zlib：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install zlib zlib-devel</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/yum%E5%AE%89%E8%A3%85zlib.png" alt="yum安装zlib"></p>
+<h3 id="4、安装openssl"><a href="#4、安装openssl" class="headerlink" title="4、安装openssl"></a>4、安装openssl</h3><p>用以下命令安装openssl：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install openssl openssl-devel</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/yum%E5%AE%89%E8%A3%85openssl.png" alt="yum安装openssl"></p>
+<h3 id="5、下载nginx"><a href="#5、下载nginx" class="headerlink" title="5、下载nginx"></a>5、下载nginx</h3><p>创建一个目录存放nginx安装包，我在/usr/local目录下创建了一个nginx目录，切换到该目录下。<em>（执行nginx安装命令时好像默认会安装到/usr/local/nginx，无论是否手动创建了这个目录）</em></p>
+<p>用以下命令下载nginx：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http:&#x2F;&#x2F;nginx.org&#x2F;download&#x2F;nginx-1.18.0.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E4%B8%8B%E8%BD%BDnginx%E5%AE%89%E8%A3%85%E5%8C%85.png" alt="下载nginx安装包"></p>
+<h3 id="6、解压nginx安装包"><a href="#6、解压nginx安装包" class="headerlink" title="6、解压nginx安装包"></a>6、解压nginx安装包</h3><p>用以下命令解压nginx安装包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf nginx-1.18.0.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E8%A7%A3%E5%8E%8Bnginx%E5%AE%89%E8%A3%85%E5%8C%85.png" alt="解压nginx安装包"></p>
+<h3 id="7、安装nginx"><a href="#7、安装nginx" class="headerlink" title="7、安装nginx"></a>7、安装nginx</h3><p>切换到解压后的目录下，用以下三个命令执行安装nginx操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%AE%89%E8%A3%85nginx01.png" alt="安装nginx01"></p>
+<p><img src="https://zjr2954.github.io/images/%E5%AE%89%E8%A3%85nginx02.png" alt="安装nginx02"></p>
+<p><img src="https://zjr2954.github.io/images/%E5%AE%89%E8%A3%85nginx03.png" alt="安装nginx03"></p>
+<h2 id="二、启动"><a href="#二、启动" class="headerlink" title="二、启动"></a>二、启动</h2><p>切换到nginx的安装目录，用以下命令启动nginx（即执行sbin目录下的nginx程序）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sbin&#x2F;nginx</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%90%AF%E5%8A%A8nginx.png" alt="启动nginx"></p>
+<h2 id="三、开启端口"><a href="#三、开启端口" class="headerlink" title="三、开启端口"></a>三、开启端口</h2><p>如果是云服务器，需要配置服务器安全组规则，开启服务器的80端口：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%90%AF80%E7%AB%AF%E5%8F%A3.png" alt="服务器开启80端口"></p>
+<h2 id="四、访问"><a href="#四、访问" class="headerlink" title="四、访问"></a>四、访问</h2><p><img src="https://zjr2954.github.io/images/%E8%AE%BF%E9%97%AE%E6%9C%8D%E5%8A%A1%E5%99%A8.png" alt="访问服务器"></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/08/01/CenOS7%E5%AE%89%E8%A3%85Nginx/">https://zjr2954.github.io/2020/08/01/CenOS7%E5%AE%89%E8%A3%85Nginx/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2020/07/15/Spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3/" title="Spring常用注解"><span>NextPost ></span><br><span class="nextTitle">Spring常用注解</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CentOS7安装Nginx"><span class="toc-number">1.</span> <span class="toc-text">CentOS7安装Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、安装"><span class="toc-number">1.1.</span> <span class="toc-text">一、安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、准备"><span class="toc-number">1.1.1.</span> <span class="toc-text">1、准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、安装pcre"><span class="toc-number">1.1.2.</span> <span class="toc-text">2、安装pcre</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、安装zlib"><span class="toc-number">1.1.3.</span> <span class="toc-text">3、安装zlib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、安装openssl"><span class="toc-number">1.1.4.</span> <span class="toc-text">4、安装openssl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、下载nginx"><span class="toc-number">1.1.5.</span> <span class="toc-text">5、下载nginx</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、解压nginx安装包"><span class="toc-number">1.1.6.</span> <span class="toc-text">6、解压nginx安装包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7、安装nginx"><span class="toc-number">1.1.7.</span> <span class="toc-text">7、安装nginx</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、启动"><span class="toc-number">1.2.</span> <span class="toc-text">二、启动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、开启端口"><span class="toc-number">1.3.</span> <span class="toc-text">三、开启端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、访问"><span class="toc-number">1.4.</span> <span class="toc-text">四、访问</span></a></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
