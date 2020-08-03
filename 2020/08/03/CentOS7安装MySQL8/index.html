@@ -1,0 +1,188 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><meta name="author" content="ZJR"><meta name="renderer" content="webkit"><meta name="copyright" content="ZJR"><meta name="keywords" content="ZJR"><meta name="description" content=""><meta name="Cache-Control" content="no-cache"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><title>CentOS7安装MySQL8 · Mr.ZJR's Blog</title><link rel="stylesheet" href="/css/style.css?v=2018.7.9"><link rel="stylesheet" href="/css/animation.css?v=2018.7.9"><link rel="icon" href="/img/assets/wujiaoxing.png"><link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.6"><!-- scripts--><script>(function( w ){
+  "use strict";
+  // rel=preload support test
+  if( !w.loadCSS ){
+    w.loadCSS = function(){};
+  }
+  // define on the loadCSS obj
+  var rp = loadCSS.relpreload = {};
+  // rel=preload feature support test
+  // runs once and returns a function for compat purposes
+  rp.support = (function(){
+    var ret;
+    try {
+      ret = w.document.createElement( "link" ).relList.supports( "preload" );
+    } catch (e) {
+      ret = false;
+    }
+    return function(){
+      return ret;
+    };
+  })();
+
+  // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+  // then change that media back to its intended value on load
+  rp.bindMediaToggle = function( link ){
+    // remember existing media attr for ultimate state, or default to 'all'
+    var finalMedia = link.media || "all";
+
+    function enableStylesheet(){
+      link.media = finalMedia;
+    }
+
+    // bind load handlers to enable media
+    if( link.addEventListener ){
+      link.addEventListener( "load", enableStylesheet );
+    } else if( link.attachEvent ){
+      link.attachEvent( "onload", enableStylesheet );
+    }
+
+    // Set rel and non-applicable media type to start an async request
+    // note: timeout allows this to happen async to let rendering continue in IE
+    setTimeout(function(){
+      link.rel = "stylesheet";
+      link.media = "only x";
+    });
+    // also enable media after 3 seconds,
+    // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+    setTimeout( enableStylesheet, 3000 );
+  };
+
+  // loop through link elements in DOM
+  rp.poly = function(){
+    // double check this to prevent external calls from running
+    if( rp.support() ){
+      return;
+    }
+    var links = w.document.getElementsByTagName( "link" );
+    for( var i = 0; i < links.length; i++ ){
+      var link = links[ i ];
+      // qualify links to those with rel=preload and as=style attrs
+      if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+        // prevent rerunning on link
+        link.setAttribute( "data-loadcss", true );
+        // bind listeners to toggle media back
+        rp.bindMediaToggle( link );
+      }
+    }
+  };
+
+  // if unsupported, run the polyfill
+  if( !rp.support() ){
+    // run once at least
+    rp.poly();
+
+    // rerun poly on an interval until onload
+    var run = w.setInterval( rp.poly, 500 );
+    if( w.addEventListener ){
+      w.addEventListener( "load", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    } else if( w.attachEvent ){
+      w.attachEvent( "onload", function(){
+        rp.poly();
+        w.clearInterval( run );
+      } );
+    }
+  }
+
+
+  // commonjs
+  if( typeof exports !== "undefined" ){
+    exports.loadCSS = loadCSS;
+  }
+  else {
+    w.loadCSS = loadCSS;
+  }
+}( typeof global !== "undefined" ? global : this ) );</script><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" defer></script><script src="/js/main.js?v=2018.7.9" defer></script><!-- fancybox--><link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script><!-- busuanzi--><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><meta name="generator" content="Hexo 4.2.0"></head><body><section class="profile-close" id="cxo-profile"><div class="profile-avatar"><i class="fa fa-caret-left"></i><img src="/img/assets/touxiang.jpg"></div><!--.profile-saying
+  i.fa.fa-comment
+  .saying--><div class="cxo-profile-inner"><div class="profile-name">ZJR</div><div class="profile-signature">for me</div><div class="friends"><div>FRIENDS</div><span><a href="//github.com/ZJR2954" target="_black">MyGitHub</a></span><span><a href="//github.com/" target="_black">GitHub</a></span></div><div class="read-progress"></div></div></section><header id="cxo-intro" style="height: 70vh;background-image: url(/img/intro/index-bg.png);"><nav id="cxo-intro-nav"><section><div class="intro-nav-title"><a href="/">Mr.ZJR's Blog</a></div><div class="intro-nav-label-box"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div><i class="fa fa-bars intro-nav-menu"><div class="intro-nav-drop"><a href="/">Home</a><a href="/about/">About</a><a href="/archives/">Archives</a><a href="/tags/">Tags</a></div></i><div class="clear"></div></section></nav><h1 class="post-title">CentOS7安装MySQL8</h1><div class="post-intros"><div class="post-intro-meta"><span class="post-intro-time"><i class="post-intro-calendar fa fa-edit"></i><span>2020-08-03</span></span><span class="post-intro-tags"><a class="intro-tag fa fa-tag" href="javascript:void(0)" date-tags="CentOS7安装MySQL8"> CentOS7安装MySQL8</a></span></div></div></header><article class="cxo-up" id="cxo-content-outer"><section id="cxo-content-inner"><article class="article-entry" id="post"><h1 id="CentOS7安装MySQL8-0-15"><a href="#CentOS7安装MySQL8-0-15" class="headerlink" title="CentOS7安装MySQL8.0.15"></a>CentOS7安装MySQL8.0.15</h1><p><em>记录安装步骤和命令以便日后查找</em></p>
+<h2 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h2><h3 id="1、准备"><a href="#1、准备" class="headerlink" title="1、准备"></a>1、准备</h3><p>移动到/usr/local目录，用以下命令创建一个存放MySQL的目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir mysql</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%88%9B%E5%BB%BAMySQL%E5%AE%89%E8%A3%85%E7%9B%AE%E5%BD%95.png" alt="创建MySQL安装目录"></p>
+<p>去MySQL<a href="https://www.mysql.com/" target="_blank" rel="noopener">官网</a>下载MySQL8的压缩包，或者也可以直接访问<a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener">MySQL的下载页</a>：</p>
+<p><img src="https://zjr2954.github.io/images/MySQL%E4%B8%8B%E8%BD%BD%E9%A1%B5.png" alt="MySQL下载页"></p>
+<p>在Archives页面选择一个适合的MySQL版本：</p>
+<p><img src="https://zjr2954.github.io/images/%E9%80%89%E6%8B%A9MySQL%E7%89%88%E6%9C%AC.png" alt="选择MySQL版本"></p>
+<p>找到合适的压缩包下载下来：</p>
+<p><img src="https://zjr2954.github.io/images/%E4%B8%8B%E8%BD%BDMySQL%E5%AF%B9%E5%BA%94%E5%8E%8B%E7%BC%A9%E5%8C%85.png" alt="下载MySQL对应压缩包"></p>
+<p>使用Xshell传输到服务器的/usr/local/mysql目录下：</p>
+<p><img src="https://zjr2954.github.io/images/%E4%BC%A0%E8%BE%93MySQL%E5%8E%8B%E7%BC%A9%E5%8C%85%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8.png" alt="传输MySQL压缩包到服务器"></p>
+<h3 id="2、解压MySQL压缩包"><a href="#2、解压MySQL压缩包" class="headerlink" title="2、解压MySQL压缩包"></a>2、解压MySQL压缩包</h3><p>用以下命令解压MySQL压缩包：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf mysql-8.0.15mysql-8.0.15-el7-x86_64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E8%A7%A3%E5%8E%8BMySQL%E5%8E%8B%E7%BC%A9%E5%8C%85.png" alt="解压MySQL压缩包"></p>
+<h3 id="3、MySQL授权及初始化"><a href="#3、MySQL授权及初始化" class="headerlink" title="3、MySQL授权及初始化"></a>3、MySQL授权及初始化</h3><p>用以下命令创建mysql用户组并在mysql用户组新增账户mysql：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">groupadd mysql</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">useradd -r -g mysql mysql</span><br></pre></td></tr></table></figure>
+
+<p>移动到/usr/local/mysql目录下，用以下命令设置mysql目录及其子目录的权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R mysql:mysql .&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>移动到/usr/local/mysql/mysql-8.0.15mysql-8.0.15-el7-x86_64目录下，用以下命令初始化MySQL，并设置了MySQL的basedir和datadir：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;mysqld --initialize --user&#x3D;mysql --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;mysql-8.0.15mysql-8.0.15-el7-x86_64 --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;mysql-8.0.15mysql-8.0.15-el7-x86_64&#x2F;data</span><br></pre></td></tr></table></figure>
+
+<p>如果出现以下错误：</p>
+<p><em>cannot open shared object file: No such file or directory</em></p>
+<p>则可能需要安装libaio，用以下命令安装libaio：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install libaio</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/MySQL%E6%8E%88%E6%9D%83%E5%8F%8A%E5%88%9D%E5%A7%8B%E5%8C%96.png" alt="MySQL授权及初始化"></p>
+<p>安装成功后再次执行初始化命令即可完成MySQL初始化：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;mysqld --initialize --user&#x3D;mysql --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;mysql-8.0.15mysql-8.0.15-el7-x86_64 --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;mysql-8.0.15mysql-8.0.15-el7-x86_64&#x2F;data</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E6%88%90%E5%8A%9F%E5%88%9D%E5%A7%8B%E5%8C%96MySQL.png" alt="成功初始化MySQL"></p>
+<p>此时生成了一个随机的初始登录密码，可以先不管它。</p>
+<h3 id="4、修改MySQL配置文件"><a href="#4、修改MySQL配置文件" class="headerlink" title="4、修改MySQL配置文件"></a>4、修改MySQL配置文件</h3><p>移动到/etc目录下可以看见my.cnf文件和my.cnf.d目录，若没有，就使用以下命令创建：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch my.cnf</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir my.cnf.d</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E6%9F%A5%E7%9C%8Bmysql%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.png" alt="查看mysql配置文件"></p>
+<p>使用以下命令修改my.cnf文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi my.cnf</span><br></pre></td></tr></table></figure>
+
+<p>配置文件的内容视自己的需要而定：</p>
+<p><img src="https://zjr2954.github.io/images/%E4%BF%AE%E6%94%B9mysql%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6.png" alt="修改mysql配置文件"></p>
+<p>修改完毕后保存并退出。</p>
+<h3 id="5、启动MySQL"><a href="#5、启动MySQL" class="headerlink" title="5、启动MySQL"></a>5、启动MySQL</h3><p>移动到/usr/local/mysql/mysql-8.0.15mysql-8.0.15-el7-x86_64/support-files目录下使用以下命令启动MySQL服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;mysql.server --user&#x3D;root</span><br></pre></td></tr></table></figure>
+
+<p>如果启动失败，可以尝试在/usr/local/mysql/mysql-8.0.15mysql-8.0.15-el7-x86_64目录下使用以下命令删掉data目录（重新初始化后data目录会再次恢复）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf data</span><br></pre></td></tr></table></figure>
+
+<p>再次使用初始化命令初始化MySQL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;mysqld --initialize --user&#x3D;mysql --basedir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;mysql-8.0.15mysql-8.0.15-el7-x86_64 --datadir&#x3D;&#x2F;usr&#x2F;local&#x2F;mysql&#x2F;mysql-8.0.15mysql-8.0.15-el7-x86_64&#x2F;data</span><br></pre></td></tr></table></figure>
+
+<p><strong>记住初始化产生的随机初始登录密码！</strong></p>
+<p>再次移动到/usr/local/mysql/mysql-8.0.15mysql-8.0.15-el7-x86_64/support-files目录下使用以下命令启动MySQL服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;mysql.server --user&#x3D;root</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%90%AF%E5%8A%A8MySQL%E6%9C%8D%E5%8A%A1.png" alt="启动MySQL"></p>
+<p>启动成功。</p>
+<h3 id="6、登录MySQL"><a href="#6、登录MySQL" class="headerlink" title="6、登录MySQL"></a>6、登录MySQL</h3><p>移动到/usr/local/mysql/mysql-8.0.15mysql-8.0.15-el7-x86_64目录下，使用以下命令登录MySQL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin&#x2F;mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E4%BD%BF%E7%94%A8%E9%BB%98%E8%AE%A4%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95MySQL.png" alt="使用默认密码登录MySQL"></p>
+<p>使用初始密码登录MySQL成功。</p>
+<h2 id="二、配置"><a href="#二、配置" class="headerlink" title="二、配置"></a>二、配置</h2><h3 id="1、修改MySQL登录密码"><a href="#1、修改MySQL登录密码" class="headerlink" title="1、修改MySQL登录密码"></a>1、修改MySQL登录密码</h3><p>登录MySQL以后，使用以下命令修改MySQL登录密码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alter user &#39;root&#39;@&#39;localhost&#39; identified by &#39;新密码&#39;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E4%BF%AE%E6%94%B9MySQL%E7%99%BB%E5%BD%95%E5%AF%86%E7%A0%81.png" alt="修改MySQL登录密码"></p>
+<h3 id="2、开启MySQL远程访问"><a href="#2、开启MySQL远程访问" class="headerlink" title="2、开启MySQL远程访问"></a>2、开启MySQL远程访问</h3><p>登录MySQL，使用以下命令开启MySQL远程访问：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use mysql;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">update user set host &#x3D; &#39;%&#39; where user &#x3D; &#39;root&#39;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%BC%80%E5%90%AFMySQL%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE.png" alt="开启MySQL远程访问"></p>
+<p>如果是云服务器，需要配置服务器安全组规则，开启服务器的3306端口：</p>
+<p><img src="https://zjr2954.github.io/images/%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E6%94%BE3306%E7%AB%AF%E5%8F%A3.png" alt="服务器开放3306端口"></p>
+<h3 id="3、刷新MySQL对主机的访问授权"><a href="#3、刷新MySQL对主机的访问授权" class="headerlink" title="3、刷新MySQL对主机的访问授权"></a>3、刷新MySQL对主机的访问授权</h3><p>登录MySQL，使用以下命令刷新MySQL对主机的访问授权：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://zjr2954.github.io/images/%E5%88%B7%E6%96%B0%E5%AF%B9%E4%B8%BB%E6%9C%BA%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8E%88%E6%9D%83.png" alt="刷新对主机的访问授权"></p>
+<h3 id="4、尝试远程连接"><a href="#4、尝试远程连接" class="headerlink" title="4、尝试远程连接"></a>4、尝试远程连接</h3><p><img src="https://zjr2954.github.io/images/%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%88%90%E5%8A%9F.png" alt="远程连接成功"></p>
+</article><!-- lincense--><div class="license-wrapper"><p> <span>Author:  </span><a href="https://zjr2954.github.io">ZJR</a></p><p> <span>Link:  </span><a href="https://zjr2954.github.io/2020/08/03/CentOS7%E5%AE%89%E8%A3%85MySQL8/">https://zjr2954.github.io/2020/08/03/CentOS7%E5%AE%89%E8%A3%85MySQL8/</a></p><p> <span>Copyright:  </span><span>All articles in this blog are licensed under <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-nd/3.0" target="_blank">CC BY-NC-SA 3.0</a> unless stating additionally.</span></p></div><div class="post-paginator"><a class="nextSlogan" href="/2020/08/01/CentOS7%E5%AE%89%E8%A3%85Java/" title="CentOS7安装Java"><span>NextPost ></span><br><span class="nextTitle">CentOS7安装Java</span></a><div class="clear"></div></div><div id="comment"></div></section></article><footer id="cxo-footer-outer"><div id="cxo-footer-inner"><p class="footer-container"><span>Site by </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span> | theme </span><a href="https://github.com/Longlongyu/hexo-theme-Cxo" target="_blank" rel="noopener"><span>Cxo</span></a></p><i class="fa fa-user"> </i><span id="busuanzi_value_site_uv"></span><span> | </span><i class="fa fa-eye"> </i><span id="busuanzi_value_site_pv"></span></div></footer><!-- catelog--><div class="toc-wrapper" style="top: 70vh;"><div class="toc-catalog"><i class="fa fa-list"> </i><span>CATALOG</span></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CentOS7安装MySQL8-0-15"><span class="toc-number">1.</span> <span class="toc-text">CentOS7安装MySQL8.0.15</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、安装"><span class="toc-number">1.1.</span> <span class="toc-text">一、安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、准备"><span class="toc-number">1.1.1.</span> <span class="toc-text">1、准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、解压MySQL压缩包"><span class="toc-number">1.1.2.</span> <span class="toc-text">2、解压MySQL压缩包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、MySQL授权及初始化"><span class="toc-number">1.1.3.</span> <span class="toc-text">3、MySQL授权及初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、修改MySQL配置文件"><span class="toc-number">1.1.4.</span> <span class="toc-text">4、修改MySQL配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、启动MySQL"><span class="toc-number">1.1.5.</span> <span class="toc-text">5、启动MySQL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6、登录MySQL"><span class="toc-number">1.1.6.</span> <span class="toc-text">6、登录MySQL</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、配置"><span class="toc-number">1.2.</span> <span class="toc-text">二、配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、修改MySQL登录密码"><span class="toc-number">1.2.1.</span> <span class="toc-text">1、修改MySQL登录密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、开启MySQL远程访问"><span class="toc-number">1.2.2.</span> <span class="toc-text">2、开启MySQL远程访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、刷新MySQL对主机的访问授权"><span class="toc-number">1.2.3.</span> <span class="toc-text">3、刷新MySQL对主机的访问授权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、尝试远程连接"><span class="toc-number">1.2.4.</span> <span class="toc-text">4、尝试远程连接</span></a></li></ol></li></ol></li></ol></div><!-- top--><i class="fa fa-arrow-up close" id="go-up" aria-hidden="true"></i></body></html>
